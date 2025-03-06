@@ -1,5 +1,6 @@
 package com.aoyukmt.service.website;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -11,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 
 @SpringBootApplication
+@MapperScan(basePackages = "com.aoyukmt.service.website.mapper")
 public class AoyukmtServiceWebsiteApplication {
     public static void main(String[] args) {
         SpringApplication.run(AoyukmtServiceWebsiteApplication.class,args);

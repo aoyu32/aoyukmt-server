@@ -4,11 +4,21 @@ server:
 
 spring:
   datasource:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/aoyukmt_server?serverTimezone=Asia/Shanghai
-      username: aoyu
-      password: root
-      type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/aoyukmt_server?serverTimezone=Asia/Shanghai
+    username: root
+    password: aoyu
+    type: com.alibaba.druid.pool.DruidDataSource
+
+mybatis:
+  configuration:
+    #开启驼峰命名映射
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 控制台打印 SQL 日志
+  #mapper.xml配置文件类路径
+  mapper-locations: classpath*:mapper/**/*.xml
+  #mapper映射的实体类所在包
+  type-aliases-package: com.aoyukmt.service.model.entity
 
 knife4j:
   enable: true
@@ -17,4 +27,3 @@ springdoc:
     enabled: true  # 启用 API 文档
   swagger-ui:
     enabled: true  # 启用 Swagger UI
-

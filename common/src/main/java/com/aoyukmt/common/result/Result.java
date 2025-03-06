@@ -1,6 +1,7 @@
 package com.aoyukmt.common.result;
 
 import com.aoyukmt.common.enumeration.ResultCode;
+import lombok.Data;
 
 /**
  * @ClassName：Result
@@ -8,7 +9,7 @@ import com.aoyukmt.common.enumeration.ResultCode;
  * @Date: 2025-03-06 16:01
  * @Description: 统一返回结果类
  */
-
+@Data
 public class Result<T> {
 
     private int code;//状态码,200成功，500失败
