@@ -37,4 +37,9 @@ public class Result<T> {
         return new Result(resultCode.getCode(), resultCode.getMsg(), null);
     }
 
+    // 失败（自定义错误信息）
+    public static <T> Result<T> error(int code, String msg, T data) {
+        return new Result<>(code, msg, data);
+    }
+
 }

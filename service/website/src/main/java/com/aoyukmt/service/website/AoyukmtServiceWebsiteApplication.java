@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @Description: aoyukmt网站服务启动类
  */
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.aoyukmt.common", "com.aoyukmt.service.website"})
 @MapperScan(basePackages = "com.aoyukmt.service.website.mapper")
 public class AoyukmtServiceWebsiteApplication {
     public static void main(String[] args) {

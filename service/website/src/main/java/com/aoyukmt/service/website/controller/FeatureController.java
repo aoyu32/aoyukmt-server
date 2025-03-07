@@ -1,7 +1,7 @@
 package com.aoyukmt.service.website.controller;
 
 import com.aoyukmt.common.result.Result;
-import com.aoyukmt.model.vo.FeatureVo;
+import com.aoyukmt.model.vo.FeatureCardVO;
 import com.aoyukmt.service.website.service.FeatureService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,7 +21,7 @@ import java.util.List;
  * @Description: 主页功能特点列表控制器
  */
 @RestController
-@RequestMapping("/web")
+@RequestMapping("/web/api")
 @Tag(name = "功能特点",description = "官网主页功能特点列表")
 public class FeatureController {
 
@@ -38,11 +38,11 @@ public class FeatureController {
      */
     @Operation(summary = "获取功能特点列表", description = "获取官网主页展示的功能特点列表数据")
     @GetMapping(value = "/feature" ,produces = "application/json")
-    public Result<List<FeatureVo>> queryAllFeature() {
+    public Result<List<FeatureCardVO>> getAllFeature() {
         log.info("请求获取所有功能特点列表...");
-        List<FeatureVo> features = featureService.queryAllFeature();
-        log.info("所有功能列表 = {}",features.toString());
-        return Result.success(features);
+        List<FeatureCardVO> allFeature = featureService.getAllFeature();
+        log.info("所有功能特点列表总数：{}，功能特点列表数据：{}",allFeature.size(),allFeature);
+        return Result.success(allFeature);
     }
 
 }

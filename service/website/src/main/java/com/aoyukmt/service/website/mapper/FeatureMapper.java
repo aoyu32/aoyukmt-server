@@ -19,7 +19,7 @@ public interface FeatureMapper {
     /*
         查询所有功能特点
      */
-    @Select("select * from features where is_active = 1")
+    @Select("select * from features where is_active = 1 order by sort_order desc ")
     List<Feature> selectAllFeature();
 
 }

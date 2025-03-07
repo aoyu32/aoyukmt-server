@@ -1,7 +1,7 @@
 package com.aoyukmt.service.website.service.impl;
 
 import com.aoyukmt.model.entity.Feature;
-import com.aoyukmt.model.vo.FeatureVo;
+import com.aoyukmt.model.vo.FeatureCardVO;
 import com.aoyukmt.service.website.mapper.FeatureMapper;
 import com.aoyukmt.service.website.service.FeatureService;
 import org.slf4j.Logger;
@@ -17,25 +17,31 @@ import java.util.List;
  * @ClassName：FeatureServiceImpl
  * @Author: aoyu
  * @Date: 2025-03-06 17:09
- * @Description: 功能特点列表业务层接口实现类
+ * @Description: 功能特点列表接口实现类
  */
 
 @Service
 public class FeatureServiceImpl implements FeatureService {
 
     private static final Logger log = LoggerFactory.getLogger(FeatureServiceImpl.class);
+
     @Autowired
     private FeatureMapper featureMapper;
 
+
+    /**
+     * 获取功能特点列表
+     * @return 功能特点VO
+     */
     @Override
-    public List<FeatureVo> queryAllFeature() {
+    public List<FeatureCardVO> getAllFeature() {
         log.info("查询所有功能列表...");
         List<Feature> features = featureMapper.selectAllFeature();
-        List<FeatureVo> featureVos = new ArrayList<>();
+        List<FeatureCardVO> featureVos = new ArrayList<>();
         for (Feature feature : features) {
-            FeatureVo featureVo = new FeatureVo();
-            BeanUtils.copyProperties(feature,featureVo);
-            featureVos.add(featureVo);
+            FeatureCardVO featureCardVO = new FeatureCardVO();
+            BeanUtils.copyProperties(feature,featureCardVO);
+            featureVos.add(featureCardVO);
         }
         return featureVos;
     }

@@ -1,6 +1,6 @@
 package com.aoyukmt.service.website.service;
 
-import com.aoyukmt.model.vo.FeatureVo;
+import com.aoyukmt.model.vo.FeatureCardVO;
 
 import java.util.List;
 
@@ -15,5 +15,5 @@ public interface FeatureService {
     /*
         查询所有功能特点
      */
-    List<FeatureVo> queryAllFeature();
+    List<FeatureCardVO> getAllFeature();
 }

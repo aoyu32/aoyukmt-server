@@ -13,11 +13,43 @@ import java.time.LocalDateTime;
 
 @Data
 public class Feature {
-    private int id;//id
-    private String icon;//表情图标字体
-    private String name;//功能特点名称
-    private String description;//功能特点描述
-    private boolean isActive;//是否使用
-    private LocalDateTime createTime;//创建时间
-    private LocalDateTime updateTime;//更新时间
+    /**
+     * 唯一标识每个功能特点
+     */
+    private Integer id;
+
+    /**
+     * 表情字体图标
+     */
+    private String icon;
+
+    /**
+     * 功能特点名称，如"模块化设计"
+     */
+    private String name;
+
+    /**
+     * 功能特点详细描述
+     */
+    private String description;
+
+    /**
+     * 是否启用，1启用，0禁用
+     */
+    private Boolean isActive;
+
+    /**
+     * 排序优先级，值越小越靠前
+     */
+    private Integer sortOrder;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
+
+    /**
+     * 更新时间
+     */
+    private LocalDateTime updateTime;
 }

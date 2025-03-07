@@ -10,6 +10,7 @@ spring:
     password: aoyu
     type: com.alibaba.druid.pool.DruidDataSource
 
+
 mybatis:
   configuration:
     #开启驼峰命名映射
@@ -27,3 +28,10 @@ springdoc:
     enabled: true  # 启用 API 文档
   swagger-ui:
     enabled: true  # 启用 Swagger UI
+
+aliyun:
+  oss:
+    endpoint: oss-cn-beijing.aliyuncs.com
+    access-key-id: LTAI5tS9YhKbp76yycrievV5
+    access-key-secret: TpZthtOQpgPjfCXpgeB6fCK15M1jYf
+    bucket-name: aoyukmt
