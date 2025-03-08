@@ -1,7 +1,9 @@
 package com.aoyukmt.common.utils;
 
+import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
+import com.aliyun.oss.OSSException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -24,11 +26,14 @@ public class AliYunOSSUtils {
     private String accessKeySecret;
     private String bucketName;
 
-
-    //生成文件唯一文件名
+    /**
+     * 生成文件唯一文件名
+     * @param fileName
+     * @return
+     */
     public String generateFileName(String fileName) {
         String extension = fileName.substring(fileName.lastIndexOf("."));
-        return UUID.randomUUID().toString() + extension;
+        return UUID.randomUUID() + extension;
     }
 
     /**
@@ -38,11 +43,20 @@ public class AliYunOSSUtils {
      * @param fileName
      * @return
      */
-    public String uploadFile(byte[] file, String fileName) throws RuntimeException {
-
+    public String uploadFile(byte[] file, String fileName){
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
         String objectName = generateFileName(fileName);
-        ossClient.putObject(bucketName, objectName, new ByteArrayInputStream(file));
-        return "https://" + bucketName + "." + endpoint + "/" + objectName;
+        try {
+            ossClient.putObject(bucketName, objectName, new ByteArrayInputStream(file));
+            return "https://" + bucketName + "." + endpoint + "/" + objectName;
+        }catch (OSSException e) {
+           throw new RuntimeException(e.getMessage());
+        }catch (ClientException e){
+            throw new RuntimeException(e.getMessage());
+        }finally {
+            if (ossClient!=null){
+                ossClient.shutdown();
+            }
+        }
     }
 }

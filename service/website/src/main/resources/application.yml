@@ -10,7 +10,6 @@ spring:
     password: aoyu
     type: com.alibaba.druid.pool.DruidDataSource
 
-
 mybatis:
   configuration:
     #开启驼峰命名映射

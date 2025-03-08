@@ -1,6 +1,5 @@
 package com.aoyukmt.service.website.controller;
 
-import com.aoyukmt.common.enumeration.ResultCode;
 import com.aoyukmt.common.exception.BusinessException;
 import com.aoyukmt.common.result.Result;
 import com.aoyukmt.common.utils.AliYunOSSUtils;
@@ -59,14 +58,9 @@ public class FeatureDetailController {
     @Operation(summary = "上传详情展示图片", description = "官网主页功能详情展示列表图片上传接口")
     @PostMapping("/img")
     public Result<?> uploadDetailImage(MultipartFile file) throws IOException {
-        log.info("文件名：{}",file.getOriginalFilename());
-        String filePath = null;
-        try {
-            filePath = aliyunOSSUtils.uploadFile(file.getBytes(), file.getOriginalFilename());
-        } catch (Exception e) {
-            throw new BusinessException(ResultCode.BAD_REQUEST);
-        }
-        log.info("上传图片：{}",filePath);
+        log.info("文件名：{}", file.getOriginalFilename());
+        String filePath = aliyunOSSUtils.uploadFile(file.getBytes(), file.getOriginalFilename());
+        log.info("上传图片：{}", filePath);
         return Result.success("上传成功");
     }
 

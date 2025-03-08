@@ -12,34 +12,67 @@ import lombok.Data;
 @Data
 public class Result<T> {
 
-    private int code;//状态码,200成功，500失败
-    private String msg;//状态说明
-    private T data;//数据
+    /**
+     * 状态码
+     */
+    private Integer code;
 
-    private Result(int code, String msg, T data) {
-        this.code = code;
-        this.msg = msg;
-        this.data = data;
-    }
+    /**
+     * 消息
+     */
+    private String message;
 
-    //成功，无数据返回
+    /**
+     * 数据
+     */
+    private T data;
+
+      /**
+     * 成功响应
+     */
     public static <T> Result<T> success() {
-        return new Result(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMsg(), null);
+        return success(null);
     }
 
-    //成功，有数据返回
+    /**
+     * 带数据的成功响应
+     */
     public static <T> Result<T> success(T data) {
-        return new Result(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMsg(), data);
+        Result<T> result = new Result<>();
+        result.setCode(ResultCode.SUCCESS.getCode());
+        result.setMessage(ResultCode.SUCCESS.getMsg());
+        result.setData(data);
+        return result;
     }
 
-    //失败
+    /**
+     * 失败响应
+     */
     public static <T> Result<T> error(ResultCode resultCode) {
-        return new Result(resultCode.getCode(), resultCode.getMsg(), null);
+        Result<T> result = new Result<>();
+        result.setCode(resultCode.getCode());
+        result.setMessage(resultCode.getMsg());
+        return result;
     }
 
-    // 失败（自定义错误信息）
-    public static <T> Result<T> error(int code, String msg, T data) {
-        return new Result<>(code, msg, data);
+    /**
+     * 自定义错误消息的失败响应
+     */
+    public static <T> Result<T> error(Integer code, String message) {
+        Result<T> result = new Result<>();
+        result.setCode(code);
+        result.setMessage(message);
+        return result;
+    }
+
+    /**
+     * 自定义错误码和消息的失败响应
+     */
+    public static <T> Result<T> error(ResultCode resultCode, String message) {
+        Result<T> result = new Result<>();
+        result.setCode(resultCode.getCode());
+        result.setMessage(message);
+        return result;
     }
 
 }

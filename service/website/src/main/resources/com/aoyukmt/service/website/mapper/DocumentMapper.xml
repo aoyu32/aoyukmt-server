@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aoyukmt.service.website.mapper.DocumentMapper">
+
+    <select id="selectAllCategoryWithDocument" resultMap="allCategoryWithDocument">
+        SELECT
+            dc.id AS category_id,
+            dc.name AS category_name,
+            dc.is_open AS category_is_open,
+            dc.sort_order AS category_sort_order, -- 为分类的 sort_order 设置别名
+            dc.is_active AS category_is_active,
+            d.id AS document_id,
+            d.category_id AS document_category_id,
+            d.label AS document_label,
+            d.en_label AS document_en_label,
+            d.docs_url AS document_docs_url,
+            d.sort_order AS document_sort_order, -- 为文档的 sort_order 设置别名
+            d.is_active AS document_is_active
+        FROM
+            document_categories dc
+                INNER JOIN
+            documents d ON dc.id = d.category_id
+        WHERE
+            dc.is_active = 1 -- 文档分类启用
+          AND d.is_active = 1 -- 使用文档启用
+        ORDER BY
+            dc.sort_order ASC, -- 文档分类按 sort_order 升序排序
+            d.sort_order ASC; -- 使用文档按 sort_order 升序排序
+    </select>
+
+    <resultMap id="allCategoryWithDocument" type="com.aoyukmt.model.dto.DocumentWithCategoryDTO">
+        <result property="id" column="category_id"/>
+        <result property="name" column="category_name"/>
+        <result property="isOpen" column="category_is_open"/>
+        <collection property="documents" ofType="com.aoyukmt.model.dto.DocumentDTO">
+            <result property="id" column="document_id"/>
+            <result property="label" column="document_label"/>
+            <result property="enLabel" column="document_en_label"/>
+            <result property="docsUrl" column="document_docs_url"/>
+        </collection>
+    </resultMap>
+
+</mapper>

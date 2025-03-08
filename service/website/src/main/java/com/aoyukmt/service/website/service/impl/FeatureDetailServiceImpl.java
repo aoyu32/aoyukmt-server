@@ -1,7 +1,6 @@
 package com.aoyukmt.service.website.service.impl;
 
 import com.aoyukmt.model.entity.FeatureDetail;
-import com.aoyukmt.model.vo.FeatureCardVO;
 import com.aoyukmt.model.vo.FeatureDetailCardVO;
 import com.aoyukmt.service.website.mapper.FeatureDetailMapper;
 import com.aoyukmt.service.website.service.FeatureDetailService;
@@ -29,6 +28,7 @@ public class FeatureDetailServiceImpl implements FeatureDetailService {
 
     /**
      * 获取所有功能详情展示列表
+     *
      * @return 功能详情列表
      */
     @Override
@@ -36,12 +36,9 @@ public class FeatureDetailServiceImpl implements FeatureDetailService {
         log.info("查询所有功能展示详情列表...");
         List<FeatureDetail> featureDetails = featureDetailMapper.selectAllFeatureDetail();
         return featureDetails.stream().map(featureDetail -> {
-            FeatureDetailCardVO featureCardVO= new FeatureDetailCardVO();
+            FeatureDetailCardVO featureCardVO = new FeatureDetailCardVO();
             BeanUtils.copyProperties(featureDetail, featureCardVO);
             return featureCardVO;
         }).toList();
     }
-
-
-
 }

@@ -2,8 +2,12 @@ package com.aoyukmt.common.exception;
 
 import com.aoyukmt.common.enumeration.ResultCode;
 import com.aoyukmt.common.result.Result;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.sql.SQLException;
 
 /**
  * @ClassName：GobalExceptionHandler
@@ -12,20 +16,36 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  * @Description: 全局异常处理类
  */
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    /**
+     * 处理其他所有未预期的异常
+     */
     @ExceptionHandler(Exception.class)
-    public Result<?> handleException(Exception e) {
-        System.out.println(e.getMessage());
-        return Result.error(ResultCode.INTERNAL_SERVER_ERROR);
+    public Result<Void> handleException(Exception e) {
+        log.error("系统异常: {}", e.getMessage());
+        return Result.error(ResultCode.SYSTEM_ERROR);
     }
 
+    /**
+     * 处理自定义业务异常
+     */
     @ExceptionHandler(BusinessException.class)
-    public Result<?> handleBusinessException(BusinessException e) {
-        System.out.println(e.getMessage());
-        return Result.error(e.getCode(),e.getMsg(),null);
+    public Result<Void> handleBusinessException(BusinessException e) {
+        log.error("业务异常: code={}, message={}", e.getCode(), e.getMessage());
+        return Result.error(e.getCode(), e.getMessage());
     }
 
+    /**
+     * 处理数据库异常
+     */
+    @ExceptionHandler(SQLException.class)
+    public Result<Void> handleSQLException(SQLException e) {
+        log.error("数据库异常: {}",  e.getMessage());
+        return Result.error(ResultCode.DB_ERROR);
+    }
 
 }
