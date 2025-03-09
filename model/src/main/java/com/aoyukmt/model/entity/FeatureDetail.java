@@ -49,7 +49,7 @@ public class FeatureDetail {
     private Integer sortOrder;
 
     /**
-     * 是否展示，1展示，0不展示
+     * 是否展示，true展示，false不展示
      */
     private Boolean isActive;
 

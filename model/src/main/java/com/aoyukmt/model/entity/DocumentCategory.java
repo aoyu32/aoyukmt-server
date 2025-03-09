@@ -31,10 +31,10 @@ public class DocumentCategory {
 
     /**
      * 是否默认展开该分类下的子项：
-     * - 1：展开
-     * - 0：收起
+     * - true：展开
+     * - false：收起
      */
-    private Integer isOpen;
+    private Boolean isOpen;
 
     /**
      * 排序值，用于控制分类的显示顺序，数值越小，越靠前。
@@ -43,8 +43,8 @@ public class DocumentCategory {
 
     /**
      * 是否启用该分类：
-     * - 1：启用
-     * - 0：禁用
+     * - true:启用
+     * - false：禁用
      */
     private Boolean isActive;
 

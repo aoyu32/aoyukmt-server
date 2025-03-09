@@ -4,8 +4,12 @@ import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
+import com.aoyukmt.common.enumeration.ResultCode;
+import com.aoyukmt.common.exception.BusinessException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.util.UUID;
@@ -21,6 +25,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class AliYunOSSUtils {
 
+    private static final Logger log = LoggerFactory.getLogger(AliYunOSSUtils.class);
     private String endpoint;
     private String accessKeyId;
     private String accessKeySecret;
@@ -48,15 +53,28 @@ public class AliYunOSSUtils {
         String objectName = generateFileName(fileName);
         try {
             ossClient.putObject(bucketName, objectName, new ByteArrayInputStream(file));
-            return "https://" + bucketName + "." + endpoint + "/" + objectName;
-        }catch (OSSException e) {
-           throw new RuntimeException(e.getMessage());
-        }catch (ClientException e){
-            throw new RuntimeException(e.getMessage());
+        }catch (OSSException oe) {
+//            log.error("OSS异常，准备抛出BusinessException");
+//           throw new BusinessException(ResultCode.OSS_EXCEPTION);
+            System.out.println("Caught an OSSException, which means your request made it to OSS, "
+                    + "but was rejected with an error response for some reason.");
+            System.out.println("Error Message:" + oe.getErrorMessage());
+            System.out.println("Error Code:" + oe.getErrorCode());
+            System.out.println("Request ID:" + oe.getRequestId());
+            System.out.println("Host ID:" + oe.getHostId());
+        }catch (ClientException ce){
+//            log.error("捕获到业务异常: class={}, message={}",
+//                    e.getClass().getName(), e.getMessage());
+//            throw new BusinessException(ResultCode.OSS_EXCEPTION);
+            System.out.println("Caught an ClientException, which means the client encountered "
+                    + "a serious internal problem while trying to communicate with OSS, "
+                    + "such as not being able to access the network.");
+            System.out.println("Error Message:" + ce.getMessage());
         }finally {
             if (ossClient!=null){
                 ossClient.shutdown();
             }
         }
+        return "https://" + bucketName + "." + endpoint + "/" + objectName;
     }
 }

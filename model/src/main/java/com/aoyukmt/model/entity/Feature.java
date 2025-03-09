@@ -34,7 +34,7 @@ public class Feature {
     private String description;
 
     /**
-     * 是否启用，1启用，0禁用
+     * 是否启用，true启用，false禁用
      */
     private Boolean isActive;
 

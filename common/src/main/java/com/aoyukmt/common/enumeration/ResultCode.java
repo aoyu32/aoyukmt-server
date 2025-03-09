@@ -10,7 +10,7 @@ public enum ResultCode {
 
     /* 客户端错误 */
     BAD_REQUEST(400, "错误的请求"),
-    PARAM_ERROR(400, "参数错误"),
+    PARAM_ERROR(400, "参数不合法"),
     UNAUTHORIZED(401, "未授权"),
     FORBIDDEN(403, "禁止访问"),
     NOT_FOUND(404, "资源不存在"),
@@ -21,14 +21,15 @@ public enum ResultCode {
     GONE(410, "资源已删除"),
     UNSUPPORTED_MEDIA_TYPE(415, "不支持的媒体类型"),
     TOO_MANY_REQUESTS(429, "请求过于频繁"),
-    UPLOAD_IMG_MAX(430,"上传资源过大"),
 
     /* 服务器错误 */
     SYSTEM_ERROR(500, "系统内部错误"),
     SERVICE_UNAVAILABLE(503, "服务不可用"),
-    DB_ERROR(504, "数据库错误");
+    DB_ERROR(504, "数据库错误"),
 
     /*业务错误*/
+    UPLOAD_IMG_MAX(430,"上传资源过大"),
+    OSS_EXCEPTION(431,"OSS异常");
 
     @Getter
     private final int code;

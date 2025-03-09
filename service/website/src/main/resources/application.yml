@@ -3,6 +3,8 @@ server:
   address: localhost
 
 spring:
+  profiles:
+    active: dev
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/aoyukmt_server?serverTimezone=Asia/Shanghai

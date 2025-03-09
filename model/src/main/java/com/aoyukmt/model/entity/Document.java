@@ -52,7 +52,7 @@ public class Document {
      * - true：启用
      * - false：禁用
      */
-    private Integer isActive;
+    private Boolean isActive;
 
     /**
      * 文档的创建时间，默认自动填充。

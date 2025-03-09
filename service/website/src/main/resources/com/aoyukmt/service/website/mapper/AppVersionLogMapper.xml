@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aoyukmt.service.website.mapper.AppVersionLogMapper">
+
+<!--    查询最新版本日志信息和下载链接已经文件哈希值-->
+    <select id="selectVersionLogByType" resultMap="latestVersionLog">
+        SELECT
+            avl.id,
+            avl.version,
+            avl.description,
+            avl.release_date,
+            avl.changelog_url,
+            ad.installer_url,
+            ad.zip_package_url,
+            ad.installer_hash,
+            ad.zip_package_hash
+        FROM app_version_log AS avl
+                 INNER JOIN app_download AS ad
+                            ON avl.id = ad.version_id
+        WHERE avl.version_type = #{versionType}
+          AND avl.is_active = 1
+          AND ad.is_active = 1
+    </select>
+
+
+
+    <resultMap id="latestVersionLog" type="com.aoyukmt.model.dto.AppVersionLogWithDownloadDTO">
+        <!-- app_version_log 表字段 -->
+        <result property="id" column="id"/>
+        <result property="version" column="version"/>
+        <result property="description" column="description"/>
+        <result property="releaseDate" column="release_date"/>
+        <result property="changelogUrl" column="changelog_url"/>
+
+        <!-- app_download 表字段 -->
+        <result property="installerUrl" column="installer_url"/>
+        <result property="zipPackageUrl" column="zip_package_url"/>
+        <result property="installerHash" column="installer_hash"/>
+        <result property="zipPackageHash" column="zip_package_hash"/>
+    </resultMap>
+
+
+</mapper>
