@@ -1,5 +1,6 @@
 package com.aoyukmt.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -30,6 +31,7 @@ public class AppVersionLogWithDownloadDTO {
     /**
      * 发布日期
      */
+    @JsonFormat(pattern = "yyyy年mm月dd日")
     private LocalDateTime releaseDate;
 
     /**

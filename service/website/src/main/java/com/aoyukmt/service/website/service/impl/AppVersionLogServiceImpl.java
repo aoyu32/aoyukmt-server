@@ -24,8 +24,19 @@ public class AppVersionLogServiceImpl implements AppVersionLogService {
     @Autowired
     private AppVersionLogMapper appVersionLogMapper;
 
-    /*
+    /**
      *查询最新版本日志和下载链接和文件哈希
+     * @return
+     */
+    @Override
+    public AppVersionLogWithDownloadDTO getLatestVersionLog() {
+        log.info("获取最新版本日志信息...");
+        return appVersionLogMapper.getLatestVersionLog();
+    }
+
+    /*
+     *根据版本类型查询版本日志和下载链接和文件哈希
+     *参数为："history","beta"
      */
     @Override
     public List<AppVersionLogWithDownloadDTO> getLatestVersionLog(String versionType) {

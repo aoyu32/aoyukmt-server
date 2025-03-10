@@ -14,8 +14,12 @@ import java.util.List;
 
 public interface AppVersionLogService {
 
+    /**
+     * 查询最新版本日志和下载链接和文件哈希
+     */
+    AppVersionLogWithDownloadDTO getLatestVersionLog();
     /*
-     *查询最新版本日志和下载链接和文件哈希
+     *根据版本类型查询版本日志和下载链接和文件哈希
      */
     List<AppVersionLogWithDownloadDTO> getLatestVersionLog(String versionType);
 

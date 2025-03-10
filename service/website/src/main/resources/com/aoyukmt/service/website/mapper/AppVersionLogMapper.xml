@@ -2,24 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.aoyukmt.service.website.mapper.AppVersionLogMapper">
 
-<!--    查询最新版本日志信息和下载链接已经文件哈希值-->
+    <sql id="versionLog">
+               avl .id,
+               avl.version,
+               avl.description,
+               avl.release_date,
+               avl.changelog_url,
+               ad.installer_url,
+               ad.zip_package_url,
+               ad.installer_hash,
+               ad.zip_package_hash
+    </sql>
+    <!--    查询最新版本日志信息和下载链接以及文件哈希值-->
+    <select id="getLatestVersionLog" resultType="com.aoyukmt.model.dto.AppVersionLogWithDownloadDTO">
+        SELECT
+        <include refid="versionLog"/>
+        FROM app_version_log AS avl
+        INNER JOIN app_download AS ad
+        ON avl.id = ad.version_id
+        WHERE avl.version_type = 'latest'
+        AND avl.is_active = 1
+        AND ad.is_active = 1
+    </select>
+
+    <!-- 根据版本类型查询日志信息和下载链接以及文件哈希值-->
     <select id="selectVersionLogByType" resultMap="latestVersionLog">
         SELECT
-            avl.id,
-            avl.version,
-            avl.description,
-            avl.release_date,
-            avl.changelog_url,
-            ad.installer_url,
-            ad.zip_package_url,
-            ad.installer_hash,
-            ad.zip_package_hash
+        <include refid="versionLog"/>
         FROM app_version_log AS avl
-                 INNER JOIN app_download AS ad
-                            ON avl.id = ad.version_id
+        INNER JOIN app_download AS ad
+        ON avl.id = ad.version_id
         WHERE avl.version_type = #{versionType}
-          AND avl.is_active = 1
-          AND ad.is_active = 1
+        AND avl.is_active = 1
+        AND ad.is_active = 1
     </select>
 
 

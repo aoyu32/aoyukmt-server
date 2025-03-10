@@ -31,19 +31,28 @@ public class AppVersionLogController {
     @Autowired
     private AppVersionLogService appVersionLogService;
 
+    @Operation(summary = "获取最新版本日志",description = "获取最新版本的版本日志信息")
+    @GetMapping("/latest")
+    public Result<AppVersionLogWithDownloadDTO> getLatestAppVersionLog() {
+        log.info("请求获取最新应用版本日志信息...");
+        AppVersionLogWithDownloadDTO latestVersionLog = appVersionLogService.getLatestVersionLog();
+        log.info("最新版本日志信息数据：{}" , latestVersionLog);
+        return Result.success(latestVersionLog);
+    }
+
+
     @Operation(summary = "根据版本类型获取版本日志", description = "根据版本类型获取应用的版本日志信息")
     @GetMapping("/changelog/{versionType}")
-    public Result<?> getLatestAppVersionLog(@PathVariable String versionType) {
-        if(!Set.of("latest", "history", "beta").contains(versionType)){
+    public Result<List<AppVersionLogWithDownloadDTO>> getVersionLogByType(@PathVariable String versionType) {
+        String historyVersion = VersionTypeConstant.HISTORY_VERSION;
+        String betaVersion = VersionTypeConstant.BETA_VERSION;
+        if(!Set.of(historyVersion,betaVersion).contains(versionType)){
             throw new BusinessException(ResultCode.PARAM_ERROR);
         }
-        log.info("请求获取最新应用版本日志信息...");
-        List<AppVersionLogWithDownloadDTO> latestVersionLog = appVersionLogService.getLatestVersionLog(versionType);
-        log.info("{} 版本日志信息数据：{}", versionType, latestVersionLog);
-        if (versionType.equals(VersionTypeConstant.LATEST_VERSION)) {
-            return Result.success(latestVersionLog.get(0));
-        }
-        return Result.success(latestVersionLog);
+        log.info("请求获取{}版本类型的应用版本日志信息",versionType);
+        List<AppVersionLogWithDownloadDTO> versionLogs = appVersionLogService.getLatestVersionLog(versionType);
+        log.info("版本类型为：{} 版本日志信息数据：{}", versionType, versionLogs);
+        return Result.success(versionLogs);
     }
 
 }
