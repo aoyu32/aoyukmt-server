@@ -29,7 +29,7 @@ import java.util.List;
 
 @Tag(name = "功能展示", description = "官网主页功能详情展示接口")
 @RestController
-@RequestMapping("/web/api")
+@RequestMapping("/web/detail")
 public class FeatureDetailController {
 
     private static final Logger log = LoggerFactory.getLogger(FeatureDetailController.class);
@@ -47,7 +47,7 @@ public class FeatureDetailController {
      * @return: 功能详情展示列表
      */
     @Operation(summary = "功能详情展示列表", description = "官网主页功能详情展示列表接口")
-    @GetMapping("/detail")
+    @GetMapping("/list")
     public Result<List<FeatureDetailCardVO>> queryAllFeatureDetail() {
         log.info("获取所有功能展示列表...");
         List<FeatureDetailCardVO> allFeatureDetail = featureDetailService.getAllFeatureDetail();

@@ -1,7 +1,6 @@
 package com.aoyukmt.service.website.service;
 
 import com.aoyukmt.model.dto.AppVersionLogWithDownloadDTO;
-import com.aoyukmt.model.entity.AppVersionLog;
 
 import java.util.List;
 

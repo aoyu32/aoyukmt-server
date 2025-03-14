@@ -1,5 +1,7 @@
 package com.aoyukmt.service.website.controller;
 
+import com.aoyukmt.common.enumeration.ResultCode;
+import com.aoyukmt.common.exception.BusinessException;
 import com.aoyukmt.common.result.Result;
 import com.aoyukmt.model.vo.FeatureCardVO;
 import com.aoyukmt.service.website.service.FeatureService;
@@ -21,7 +23,7 @@ import java.util.List;
  * @Description: 主页功能特点列表控制器
  */
 @RestController
-@RequestMapping("/web/api")
+@RequestMapping("/web/feature")
 @Tag(name = "功能特点",description = "官网主页功能特点列表")
 public class FeatureController {
 
@@ -37,7 +39,7 @@ public class FeatureController {
      * @return: 功能特点列表
      */
     @Operation(summary = "获取功能特点列表", description = "获取官网主页展示的功能特点列表数据")
-    @GetMapping(value = "/feature" ,produces = "application/json")
+    @GetMapping(value = "/list" ,produces = "application/json")
     public Result<List<FeatureCardVO>> getAllFeature() {
         log.info("请求获取所有功能特点列表...");
         List<FeatureCardVO> allFeature = featureService.getAllFeature();

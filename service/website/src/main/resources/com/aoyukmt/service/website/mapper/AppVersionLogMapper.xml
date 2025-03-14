@@ -37,8 +37,7 @@
         AND ad.is_active = 1
     </select>
 
-
-
+    <!--    封装版本日志信息和下载信息-->
     <resultMap id="latestVersionLog" type="com.aoyukmt.model.dto.AppVersionLogWithDownloadDTO">
         <!-- app_version_log 表字段 -->
         <result property="id" column="id"/>

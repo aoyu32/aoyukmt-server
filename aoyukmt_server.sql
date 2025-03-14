@@ -280,3 +280,22 @@ VALUES
   (17, 17, 'p0q1r2s3t4u5v6w7x8y9z0a1b2c3d4e5f6g7h8i9j0k1l2m3n4o6p9q0', 1, 'full', 'Aoyu', 'macOS 10.13 or higher', '© 2025 Aoyu. All rights reserved.', 1),
   (18, 18, 'q0r1s2t3u4v5w6x7y8z9a0b1c2d3e4f5g6h7i8j9k0l1m2n3o4p5q0r1', 0, 'incremental', 'Aoyu', 'Linux (Ubuntu 18.04 or higher)', '© 2025 Aoyu. All rights reserved.', 1),
   (19, 19, 'r0s1t2u3v4w5x6y7z8a9b0c1d2e3f4g5h6i7j8k9l0m1n2o3p4q5s1t0', 1, 'full', 'Aoyu', 'Windows 7 or higher', '© 2025 Aoyu. All rights reserved.', 1);
+	
+	
+CREATE TABLE `app_download_record` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '下载记录 ID',
+  `version_id` INT UNSIGNED NOT NULL COMMENT '关联的版本日志 ID',
+  `user_id` VARCHAR(255) NOT NULL COMMENT '唯一的下载用户标识',
+  `user_ip` VARCHAR(255) NOT NULL COMMENT '用户 IP 地址',
+  `user_agent` VARCHAR(255) DEFAULT NULL COMMENT '用户浏览器信息',
+  `download_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '下载时间',
+  `installer_type` ENUM('installer', 'zip') NOT NULL COMMENT '下载的包类型',
+  PRIMARY KEY (`id`),
+  KEY `idx_version_user_id` (`version_id`, `user_id`),
+  KEY `idx_download_time` (`download_time`),
+  KEY `idx_user_ip` (`user_ip`),
+  CONSTRAINT `fk_download_record_version_id` FOREIGN KEY (`version_id`) REFERENCES `app_version_log` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户下载记录表，存储用户的下载行为，包含下载包类型、IP 和时间等';
+
+	
+	

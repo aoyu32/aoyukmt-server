@@ -2,13 +2,11 @@ package com.aoyukmt.service.website.controller;
 
 import com.aoyukmt.common.result.Result;
 import com.aoyukmt.model.dto.DocumentWithCategoryDTO;
-import com.aoyukmt.model.vo.DocumentWithCategoryVO;
 import com.aoyukmt.service.website.service.DocumentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +22,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/web/api")
+@RequestMapping("/web/docs")
 @Tag(name = "使用文档",description = "使用文档接口")
 public class DocumentController {
 
@@ -40,7 +38,7 @@ public class DocumentController {
      * @return: 所有分类和文档
      */
     @Operation(summary = "获取所有分类下所有文档",description = "获取所有文档分类下的所有文档")
-    @GetMapping("documents")
+    @GetMapping("list")
     public Result<List<DocumentWithCategoryDTO>> getAllCategoryWithDocument() {
         log.info("请求获取所有文档分类下的所有文档...");
         List<DocumentWithCategoryDTO> allCategoryWithDocument = documentService.getAllCategoryWithDocument();

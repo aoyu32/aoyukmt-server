@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aoyukmt.service.website.mapper.DownloadMapper">
+
+    <select id="selectLatestDownloadUrl" resultType="String">
+        SELECT
+        <trim prefix="" suffix="" suffixOverrides=",">
+            <if test="downloadType == 'installer'">installer_url,</if>
+            <if test="downloadType == 'zip'">zip_package_url,</if>
+        </trim>
+        FROM app_download as ad
+        JOIN app_version_log as avl
+        ON ad.version_id = avl.id
+        WHERE avl.version_type = 'latest'
+        AND avl.is_active = 1
+    </select>
+
+</mapper>

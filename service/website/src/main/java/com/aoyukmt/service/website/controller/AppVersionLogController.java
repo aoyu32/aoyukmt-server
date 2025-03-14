@@ -24,7 +24,7 @@ import java.util.Set;
  */
 @Tag(name = "应用版本日志", description = "应用版本日志相关接口")
 @RestController
-@RequestMapping("/web/api")
+@RequestMapping("/web/changelog")
 public class AppVersionLogController {
 
     private static final Logger log = LoggerFactory.getLogger(AppVersionLogController.class);
@@ -42,7 +42,7 @@ public class AppVersionLogController {
 
 
     @Operation(summary = "根据版本类型获取版本日志", description = "根据版本类型获取应用的版本日志信息")
-    @GetMapping("/changelog/{versionType}")
+    @GetMapping("/{versionType}")
     public Result<List<AppVersionLogWithDownloadDTO>> getVersionLogByType(@PathVariable String versionType) {
         String historyVersion = VersionTypeConstant.HISTORY_VERSION;
         String betaVersion = VersionTypeConstant.BETA_VERSION;

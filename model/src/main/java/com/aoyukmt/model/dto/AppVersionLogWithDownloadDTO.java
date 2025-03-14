@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
  * @Date: 2025-03-09 21:21
  * @Description: 应用版本日志和下载url实体
  */
+
 @Data
 public class AppVersionLogWithDownloadDTO {
     /**
@@ -31,7 +32,7 @@ public class AppVersionLogWithDownloadDTO {
     /**
      * 发布日期
      */
-    @JsonFormat(pattern = "yyyy年mm月dd日")
+    @JsonFormat(pattern = "yyyy年MM月dd日")
     private LocalDateTime releaseDate;
 
     /**
