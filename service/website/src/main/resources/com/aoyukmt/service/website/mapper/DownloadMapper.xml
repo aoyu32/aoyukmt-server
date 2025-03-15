@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.aoyukmt.service.website.mapper.DownloadMapper">
 
+<!--    根据安装包类型查询最新版本的下载链接-->
     <select id="selectLatestDownloadUrl" resultType="String">
         SELECT
         <trim prefix="" suffix="" suffixOverrides=",">
@@ -12,6 +13,21 @@
         JOIN app_version_log as avl
         ON ad.version_id = avl.id
         WHERE avl.version_type = 'latest'
+        AND avl.is_active = 1
+    </select>
+
+<!--    根据版本号和安装包类型查询历史版本的下载链接-->
+    <select id="selectHistoryDownloadUrl" resultType="java.lang.String">
+        SELECT
+        <trim prefix="" suffix="" suffixOverrides=",">
+            <if test="packageType == 'installer'">installer_url,</if>
+            <if test="packageType == 'zip'">zip_package_url,</if>
+        </trim>
+        FROM app_download as ad
+        JOIN app_version_log as avl
+        ON ad.version_id = avl.id
+        WHERE avl.version = #{version}
+        AND avl.version_type = 'history'
         AND avl.is_active = 1
     </select>
 

@@ -16,7 +16,7 @@ mybatis:
   configuration:
     #开启驼峰命名映射
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 控制台打印 SQL 日志
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 控制台打印 SQL 日志
   #mapper.xml配置文件类路径
   mapper-locations: classpath*:mapper/**/*.xml
   #mapper映射的实体类所在包

@@ -28,8 +28,14 @@ public enum ResultCode {
     DB_ERROR(504, "数据库错误"),
 
     /*业务错误*/
+    /**文件上传**/
     UPLOAD_IMG_MAX(430,"上传资源过大"),
-    OSS_EXCEPTION(431,"OSS异常");
+    OSS_EXCEPTION(431,"OSS异常"),
+
+    /**下载**/
+    RESOURCES_NOT_EXITS(432,"安装包不存在"),
+    INVALID_FILENAME(433,"非法的文件名"),
+    DOWNLOAD_FAILED(434,"文件下载出错");
 
     @Getter
     private final int code;

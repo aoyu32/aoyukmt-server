@@ -1,24 +1,22 @@
 package com.aoyukmt.service.website.controller;
 
-import com.aoyukmt.common.constant.DownloadConstants;
-import com.aoyukmt.common.constant.VersionTypeConstant;
 import com.aoyukmt.common.result.Result;
-import com.aoyukmt.model.dto.AppDownloadLatestDTO;
 import com.aoyukmt.service.website.service.DownloadService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.IOException;
 
 /**
  * @ClassName：DownloadController
@@ -36,56 +34,58 @@ public class DownloadController {
     @Autowired
     private DownloadService downloadService;
 
-    @Value("${file.app-resources-path}")
-    private String appResourcesPath;
 
-    @Value("${file.app_name}")
-    private String appName;
-
-    @Operation(summary = "获取最新版下载链接",description = "根据下载的安装包类型获取最新版本的下载链接")
-    @GetMapping("/latest/{downloadType}")
-    public Result<String> downloadLatest(@PathVariable String downloadType) {
-        log.info("请求获取最新版本的下载链接...");
-        String latestUrl = downloadService.downloadLatest(downloadType);
+    /**
+     * @description: 最新版本下载链接接口
+     * @author: aoyu
+     * @date: 2025/3/15 下午1:14
+     * @param: 安装包类型,下载用户id
+     * @return: 最新版本下载链接
+     */
+    @Operation(summary = "获取最新版的下载链接", description = "根据下载的安装包类型获取最新版本的下载链接")
+    @GetMapping("/latest/{packageType}/{uid}")
+    public Result<String> latestDownloadUrl(@PathVariable String packageType, @PathVariable String uid) {
+        log.info("{}请求获取最新版本的 {} 下载链接...",uid,packageType);
+        String latestUrl = downloadService.getLatestUrl(packageType);
+        log.info("最新版本的下载链接：{}",latestUrl);
         return Result.success(latestUrl);
     }
 
-//    @Operation(summary = "下载最新版本", description = "根据下载的安装包类型下载最新版本的应用文件")
-//    @PostMapping("/latest")
-//    public ResponseEntity<InputStreamResource> downloadLatest(@RequestBody AppDownloadLatestDTO downloadParam) throws Exception {
-//        //安装包类型
-//        String installerType = downloadParam.getInstallerType();
-//        log.info("请求下载最新版：安装包类型：{}", downloadParam.getInstallerType());
-//        //获取最新版本号
-//        String latestVersionNumber = downloadService.getLatestVersionNumber();
-//        String fileName = appName + "-" + latestVersionNumber;
-//        if (installerType.equals(DownloadConstants.INSTALLER)) {
-//            fileName = fileName + DownloadConstants.EXE_FILE;
-//        } else {
-//            fileName = fileName + DownloadConstants.ZIP_FILE;
-//        }
-//        StringBuilder stringBuilder = new StringBuilder(appResourcesPath);
-//
-//        String filePath = stringBuilder.append("\\").append(installerType).append("\\").append(VersionTypeConstant.LATEST_VERSION)
-//                .append("\\").append(fileName).toString();
-//
-//        log.info("最新版本安装包文件路径：{}", filePath);
-//
-//        //创建输入流
-//        File file = new File(filePath);
-//        FileInputStream fileInputStream = new FileInputStream(file);
-//
-//        //设置响应头
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
-//        headers.add("Access-Control-Expose-Headers", "Content-Disposition");
-//        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-//
-//        //返回数据流
-//        return ResponseEntity.ok()
-//                .headers(headers)
-//                .contentLength(file.length())
-//                .body(new InputStreamResource(fileInputStream));
-//
-//    }
+    /**
+     * @description: 安装包文件下载接口
+     * @author: aoyu
+     * @date: 2025/3/15 下午1:15
+     * @param: 应用全名
+     * @return: 安装包文件
+     */
+    @Operation(summary = "下载某个版本的安装包",description = "根据请求下载的应用全名下载对应的安装包")
+    @GetMapping("/latest/{appFileName}")
+    public ResponseEntity<Resource> downloadLatest(@PathVariable String appFileName) throws IOException {
+        log.info("请求下载最新版本 {} 安装包：", appFileName);
+        Resource appFile = downloadService.getAppFile(appFileName);
+        System.out.println(appFile.contentLength());
+        return ResponseEntity.ok()
+                .contentLength(appFile.contentLength())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + appFile.getFilename() + "\"")
+                .body(appFile);
+    }
+
+
+    /**
+     * @description: 历史版本下载链接接口
+     * @author: aoyu
+     * @date: 2025/3/15 下午7:55
+     * @param: 版本号，安装包类型，下载用户id
+     * @return: 该历史版本的下载链接
+     */
+    @Operation(summary = "获取某个历史版本的下载链接",description = "根据版本号和安装包类型获取对应的历史版本的安装包的下载链接")
+    @GetMapping("/history/{version}/{packageType}/{uid}")
+    public Result<String> historyDownloadUrl(@PathVariable String version, @PathVariable String packageType,@PathVariable String uid) {
+       log.info("{} 请求下载 版本为 {} 安装方式为 {} 的应用包：", uid,version, packageType);
+        String historyUrl = downloadService.getHistoryUrl(version, packageType);
+        log.info("历史版本：{} 的 {} 安装包下载链接 {}",version,packageType,historyUrl);
+        return Result.success(historyUrl);
+    }
+
 }

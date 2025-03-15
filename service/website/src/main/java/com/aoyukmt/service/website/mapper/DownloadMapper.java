@@ -24,4 +24,12 @@ public interface DownloadMapper {
      */
     @Select("select version from app_version_log where version_type = 'latest' and is_active = 1")
     String selectLatestVersionNumber();
+
+    /**
+     * 根据版本号和安装包类型查询历史版本的下载链接
+     * @param version 版本号
+     * @param packageType 安装包类型
+     * @return 该历史版本的下载链接
+     */
+    String selectHistoryDownloadUrl(String version,String packageType);
 }

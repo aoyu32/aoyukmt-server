@@ -13,7 +13,7 @@ public class DownloadConstants {
     public static final int MAX_REQUESTS = 5;
 
     //最大请求时间单位
-    public static final int TIME_WINDOW = 60;
+    public static final int TIME_WINDOW = 30;
 
     //安装包
     public static final String INSTALLER = "installer";
