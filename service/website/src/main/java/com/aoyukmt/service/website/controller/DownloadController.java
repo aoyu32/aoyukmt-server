@@ -1,6 +1,8 @@
 package com.aoyukmt.service.website.controller;
 
 import com.aoyukmt.common.result.Result;
+import com.aoyukmt.model.vo.HistoryAppVO;
+import com.aoyukmt.model.vo.LatestAppVO;
 import com.aoyukmt.service.website.service.DownloadService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -11,10 +13,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -39,15 +38,15 @@ public class DownloadController {
      * @description: 最新版本下载链接接口
      * @author: aoyu
      * @date: 2025/3/15 下午1:14
-     * @param: 安装包类型,下载用户id
+     * @param: 安装包类型, 下载用户id
      * @return: 最新版本下载链接
      */
     @Operation(summary = "获取最新版的下载链接", description = "根据下载的安装包类型获取最新版本的下载链接")
-    @GetMapping("/latest/{packageType}/{uid}")
-    public Result<String> latestDownloadUrl(@PathVariable String packageType, @PathVariable String uid) {
-        log.info("{}请求获取最新版本的 {} 下载链接...",uid,packageType);
-        String latestUrl = downloadService.getLatestUrl(packageType);
-        log.info("最新版本的下载链接：{}",latestUrl);
+    @PostMapping("/latest")
+    public Result<String> latestDownloadUrl(@RequestBody LatestAppVO latestAppVO) {
+        log.info("{}请求获取最新版本的 {} 下载链接...",latestAppVO.getUid(),latestAppVO.getPackageType());
+        String latestUrl = downloadService.getLatestUrl(latestAppVO);
+        log.info("最新版本的下载链接：{}", latestUrl);
         return Result.success(latestUrl);
     }
 
@@ -55,14 +54,14 @@ public class DownloadController {
      * @description: 安装包文件下载接口
      * @author: aoyu
      * @date: 2025/3/15 下午1:15
-     * @param: 应用全名
+     * @param: 版本类型，应用全名
      * @return: 安装包文件
      */
-    @Operation(summary = "下载某个版本的安装包",description = "根据请求下载的应用全名下载对应的安装包")
-    @GetMapping("/latest/{appFileName}")
-    public ResponseEntity<Resource> downloadLatest(@PathVariable String appFileName) throws IOException {
-        log.info("请求下载最新版本 {} 安装包：", appFileName);
-        Resource appFile = downloadService.getAppFile(appFileName);
+    @Operation(summary = "下载某个版本的安装包", description = "根据请求下载的应用全名下载对应的安装包")
+    @GetMapping("/{versionType}/{appFileName}")
+    public ResponseEntity<Resource> downloadLatest(@PathVariable String versionType, @PathVariable String appFileName) throws IOException {
+        log.info("请求下载 {} 版本,应用全名为 {} 的安装包：", versionType,appFileName);
+        Resource appFile = downloadService.getAppFile(versionType,appFileName);
         System.out.println(appFile.contentLength());
         return ResponseEntity.ok()
                 .contentLength(appFile.contentLength())
@@ -79,12 +78,12 @@ public class DownloadController {
      * @param: 版本号，安装包类型，下载用户id
      * @return: 该历史版本的下载链接
      */
-    @Operation(summary = "获取某个历史版本的下载链接",description = "根据版本号和安装包类型获取对应的历史版本的安装包的下载链接")
-    @GetMapping("/history/{version}/{packageType}/{uid}")
-    public Result<String> historyDownloadUrl(@PathVariable String version, @PathVariable String packageType,@PathVariable String uid) {
-       log.info("{} 请求下载 版本为 {} 安装方式为 {} 的应用包：", uid,version, packageType);
-        String historyUrl = downloadService.getHistoryUrl(version, packageType);
-        log.info("历史版本：{} 的 {} 安装包下载链接 {}",version,packageType,historyUrl);
+    @Operation(summary = "获取某个历史版本的下载链接", description = "根据版本号和安装包类型获取对应的历史版本的安装包的下载链接")
+    @PostMapping("/history")
+    public Result<String> historyDownloadUrl(@RequestBody HistoryAppVO historyAppVO) {
+        log.info("{} 请求下载 版本为 {} 安装方式为 {} 的应用包：", historyAppVO.getUid(), historyAppVO.getVersion(), historyAppVO.getPackageType());
+        String historyUrl = downloadService.getHistoryUrl(historyAppVO);
+        log.info("历史版本：{} 的 {} 安装包下载链接 {}", historyAppVO.getVersion(), historyAppVO.getPackageType(), historyUrl);
         return Result.success(historyUrl);
     }
 

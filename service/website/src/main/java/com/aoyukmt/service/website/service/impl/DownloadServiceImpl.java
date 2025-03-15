@@ -4,6 +4,8 @@ import com.aoyukmt.common.constant.DownloadConstants;
 import com.aoyukmt.common.constant.VersionTypeConstant;
 import com.aoyukmt.common.enumeration.ResultCode;
 import com.aoyukmt.common.exception.BusinessException;
+import com.aoyukmt.model.vo.HistoryAppVO;
+import com.aoyukmt.model.vo.LatestAppVO;
 import com.aoyukmt.service.website.mapper.DownloadMapper;
 import com.aoyukmt.service.website.service.DownloadService;
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.util.Set;
 
 /**
  * @ClassName：DownloadServiceImpl
@@ -36,14 +39,15 @@ public class DownloadServiceImpl implements DownloadService {
 
     /**
      * 获取最新版本下载链接
-     * @param packageType 安装包类型
+     *
+     * @param latestAppVO 请求最新版本下载链接参数实体
      * @return 最新版本的下载链接
      */
     @Override
-    public String getLatestUrl(String packageType) {
+    public String getLatestUrl(LatestAppVO latestAppVO) {
         log.info("获取最新版本下载链接......");
-        String latestUrl = downloadMapper.selectLatestDownloadUrl(packageType);
-        if(latestUrl == null){
+        String latestUrl = downloadMapper.selectLatestDownloadUrl(latestAppVO.getPackageType());
+        if (latestUrl == null) {
             throw new BusinessException(ResultCode.RESOURCES_NOT_EXITS);
         }
         return latestUrl;
@@ -51,6 +55,7 @@ public class DownloadServiceImpl implements DownloadService {
 
     /**
      * 获取最新版本的版本号
+     *
      * @return 版本号
      */
     @Override
@@ -65,7 +70,7 @@ public class DownloadServiceImpl implements DownloadService {
      * @return 安装包文件
      */
     @Override
-    public Resource getAppFile(String appFileName) {
+    public Resource getAppFile(String versionType, String appFileName) {
         // 验证文件名格式
         if (appFileName == null || appFileName.isEmpty() || appFileName.contains("..") ||
                 appFileName.contains("/") || appFileName.contains("\\")) {
@@ -80,14 +85,20 @@ public class DownloadServiceImpl implements DownloadService {
             extension = appFileName.substring(lastDotIndex).toLowerCase();
         }
 
+        //判断版本类型是否合法
+        Set<String> types = Set.of(VersionTypeConstant.LATEST_VERSION, VersionTypeConstant.HISTORY_VERSION);
+        if (!types.contains(versionType)) {
+            throw new BusinessException(ResultCode.UNKNOWN_VERSION_TYPE);
+        }
+
         //  构建本地文件路径
         String filePath = appResourcesPath + File.separator;
         if (extension.equals(DownloadConstants.EXE_FILE)) {
-            filePath = filePath + DownloadConstants.INSTALLER + File.separator + VersionTypeConstant.LATEST_VERSION + File.separator + appFileName;
+            filePath = filePath + versionType + File.separator + DownloadConstants.INSTALLER + File.separator + appFileName;
             log.info("构建文件本地路径: {}", filePath);
         }
         if (extension.equals(DownloadConstants.ZIP_FILE)) {
-            filePath = filePath + DownloadConstants.ZIP + File.separator + VersionTypeConstant.LATEST_VERSION + File.separator + appFileName;
+            filePath = filePath + versionType + File.separator + DownloadConstants.ZIP + File.separator + appFileName;
             log.info("构建文件本地路径: {}", filePath);
         }
 
@@ -108,15 +119,15 @@ public class DownloadServiceImpl implements DownloadService {
 
     /**
      * 获取历史版本下载链接
-     * @param version 历史版本号
-     * @param packageType 安装包类型
+     *
+     * @param historyAppVO 历史版本请求参数实体
      * @return 下载链接
      */
     @Override
-    public String getHistoryUrl(String version, String packageType) {
-        log.info("获取历史版本号为 {} 安装包类型为 {} 的下载链接：",version,packageType);
-        String historyUrl = downloadMapper.selectHistoryDownloadUrl(version,packageType);
-        if(historyUrl==null){
+    public String getHistoryUrl(HistoryAppVO historyAppVO) {
+        log.info("获取历史版本号为 {} 安装包类型为 {} 的下载链接：", historyAppVO.getVersion(), historyAppVO.getPackageType());
+        String historyUrl = downloadMapper.selectHistoryDownloadUrl(historyAppVO.getVersion(), historyAppVO.getPackageType());
+        if (historyUrl == null) {
             throw new BusinessException(ResultCode.RESOURCES_NOT_EXITS);
         }
         return historyUrl;

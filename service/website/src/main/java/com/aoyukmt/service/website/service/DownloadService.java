@@ -1,5 +1,7 @@
 package com.aoyukmt.service.website.service;
 
+import com.aoyukmt.model.vo.HistoryAppVO;
+import com.aoyukmt.model.vo.LatestAppVO;
 import org.springframework.core.io.Resource;
 
 /**
@@ -12,10 +14,11 @@ import org.springframework.core.io.Resource;
 public interface DownloadService {
 
     /**
-     * 下载最新版本
+     * 获取最新版本下载链接
+     * @param latestAppVO 最新版本请求参数实体
      * @return 下载链接
      */
-    String getLatestUrl(String downloadType);
+    String getLatestUrl(LatestAppVO latestAppVO);
 
     /**
      * 获取最新版本的版本号
@@ -27,15 +30,14 @@ public interface DownloadService {
      * 获取安装文件
      * @return 安装包文件
      */
-    Resource getAppFile(String appFileName);
+    Resource getAppFile(String versionType,String appFileName);
 
     /**
-     *
-     * @param version 版本号
-     * @param packageType 安装包类型
+     *获取历史版本下载链接
+     * @param historyAppVO 历史版本请求参数实体
      * @return 下载链接
      */
-    String getHistoryUrl(String version,String packageType);
+    String getHistoryUrl(HistoryAppVO historyAppVO);
 
 
 }
