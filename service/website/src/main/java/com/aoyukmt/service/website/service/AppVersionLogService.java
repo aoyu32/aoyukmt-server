@@ -1,6 +1,6 @@
 package com.aoyukmt.service.website.service;
 
-import com.aoyukmt.model.dto.AppVersionLogWithDownloadDTO;
+import com.aoyukmt.model.dto.AppVersionLogDTO;
 
 import java.util.List;
 
@@ -16,10 +16,10 @@ public interface AppVersionLogService {
     /**
      * 查询最新版本日志和下载链接和文件哈希
      */
-    AppVersionLogWithDownloadDTO getLatestVersionLog();
+    AppVersionLogDTO getLatestVersionLog();
     /*
      *根据版本类型查询版本日志和下载链接和文件哈希
      */
-    List<AppVersionLogWithDownloadDTO> getLatestVersionLog(String versionType);
+    List<AppVersionLogDTO> getLatestVersionLog(String versionType);
 
 }

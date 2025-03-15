@@ -8,13 +8,11 @@
                avl.description,
                avl.release_date,
                avl.changelog_url,
-               ad.installer_url,
-               ad.zip_package_url,
                ad.installer_hash,
                ad.zip_package_hash
     </sql>
-    <!--    查询最新版本日志信息和下载链接以及文件哈希值-->
-    <select id="getLatestVersionLog" resultType="com.aoyukmt.model.dto.AppVersionLogWithDownloadDTO">
+    <!--    查询最新版本日志信息和安装包文件哈希值-->
+    <select id="getLatestVersionLog" resultType="com.aoyukmt.model.dto.AppVersionLogDTO">
         SELECT
         <include refid="versionLog"/>
         FROM app_version_log AS avl
@@ -25,7 +23,7 @@
         AND ad.is_active = 1
     </select>
 
-    <!-- 根据版本类型查询日志信息和下载链接以及文件哈希值-->
+    <!-- 根据版本类型查询日志信息和安装包文件哈希值-->
     <select id="selectVersionLogByType" resultMap="latestVersionLog">
         SELECT
         <include refid="versionLog"/>
@@ -38,7 +36,7 @@
     </select>
 
     <!--    封装版本日志信息和下载信息-->
-    <resultMap id="latestVersionLog" type="com.aoyukmt.model.dto.AppVersionLogWithDownloadDTO">
+    <resultMap id="latestVersionLog" type="com.aoyukmt.model.dto.AppVersionLogDTO">
         <!-- app_version_log 表字段 -->
         <result property="id" column="id"/>
         <result property="version" column="version"/>
@@ -47,8 +45,6 @@
         <result property="changelogUrl" column="changelog_url"/>
 
         <!-- app_download 表字段 -->
-        <result property="installerUrl" column="installer_url"/>
-        <result property="zipPackageUrl" column="zip_package_url"/>
         <result property="installerHash" column="installer_hash"/>
         <result property="zipPackageHash" column="zip_package_hash"/>
     </resultMap>

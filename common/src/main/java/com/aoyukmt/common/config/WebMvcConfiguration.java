@@ -32,8 +32,6 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     }
 
     //注册下载请求拦截器
-
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(downloadInterceptor)

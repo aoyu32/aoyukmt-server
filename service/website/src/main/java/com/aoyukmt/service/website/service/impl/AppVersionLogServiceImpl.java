@@ -1,6 +1,6 @@
 package com.aoyukmt.service.website.service.impl;
 
-import com.aoyukmt.model.dto.AppVersionLogWithDownloadDTO;
+import com.aoyukmt.model.dto.AppVersionLogDTO;
 import com.aoyukmt.service.website.mapper.AppVersionLogMapper;
 import com.aoyukmt.service.website.service.AppVersionLogService;
 import org.slf4j.Logger;
@@ -28,7 +28,7 @@ public class AppVersionLogServiceImpl implements AppVersionLogService {
      * @return
      */
     @Override
-    public AppVersionLogWithDownloadDTO getLatestVersionLog() {
+    public AppVersionLogDTO getLatestVersionLog() {
         log.info("获取最新版本日志信息...");
 //        throw new BusinessException(ResultCode.SERVICE_UNAVAILABLE);
         return appVersionLogMapper.getLatestVersionLog();
@@ -39,7 +39,7 @@ public class AppVersionLogServiceImpl implements AppVersionLogService {
      *参数为："history","beta"
      */
     @Override
-    public List<AppVersionLogWithDownloadDTO> getLatestVersionLog(String versionType) {
+    public List<AppVersionLogDTO> getLatestVersionLog(String versionType) {
         log.info("获取 {} 版本日志信息...", versionType);
 //        throw new BusinessException(ResultCode.SYSTEM_ERROR);
         return appVersionLogMapper.selectVersionLogByType(versionType);

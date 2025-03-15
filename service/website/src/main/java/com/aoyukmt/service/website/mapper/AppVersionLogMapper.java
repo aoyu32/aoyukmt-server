@@ -1,6 +1,6 @@
 package com.aoyukmt.service.website.mapper;
 
-import com.aoyukmt.model.dto.AppVersionLogWithDownloadDTO;
+import com.aoyukmt.model.dto.AppVersionLogDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -20,14 +20,14 @@ public interface AppVersionLogMapper {
      * 获取最新版本日志
      * @return
      */
-    AppVersionLogWithDownloadDTO getLatestVersionLog();
+    AppVersionLogDTO getLatestVersionLog();
 
     /*
      *根据类型查询版本日志和下载链接和文件哈希
      * 参数为"history","beta"
      * @return
      */
-    List<AppVersionLogWithDownloadDTO> selectVersionLogByType(@Param("versionType") String versionType);
+    List<AppVersionLogDTO> selectVersionLogByType(String versionType);
 
 
 
