@@ -15,6 +15,9 @@ public class DownloadConstants {
     //最大请求时间单位
     public static final int TIME_WINDOW = 30;
 
+    //下载id的redis缓存过期时间
+    public static final int DOWNLOAD_ID_TIMEOUT = 30;
+
     //安装包
     public static final String INSTALLER = "installer";
 

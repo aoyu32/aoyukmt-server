@@ -1,5 +1,6 @@
 package com.aoyukmt.service.website.service;
 
+import com.aoyukmt.model.entity.AppDownloadRecord;
 import com.aoyukmt.model.vo.HistoryAppVO;
 import com.aoyukmt.model.vo.LatestAppVO;
 import org.springframework.core.io.Resource;
@@ -26,6 +27,21 @@ public interface DownloadService {
      */
     String getLatestVersionNumber();
 
+
+    /**
+     * 获取最新版本id
+     * @return 最新版本id
+     */
+    Integer getLatestVersionId();
+
+    /**
+     * 更加版本号获取id
+     * @param versionNumber 版本号
+     * @return 该版本的id
+     */
+    Integer getVersionId(String versionNumber);
+
+
     /**
      * 获取安装文件
      * @return 安装包文件
@@ -38,6 +54,13 @@ public interface DownloadService {
      * @return 下载链接
      */
     String getHistoryUrl(HistoryAppVO historyAppVO);
+
+    /**
+     * 插入一条用户下载记录
+     * @param appDownloadRecord 用户下载记录实体
+     */
+    void addDownloadRecord(AppDownloadRecord appDownloadRecord);
+
 
 
 }

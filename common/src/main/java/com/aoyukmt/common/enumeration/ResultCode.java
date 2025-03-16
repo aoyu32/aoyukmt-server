@@ -36,7 +36,8 @@ public enum ResultCode {
     RESOURCES_NOT_EXITS(432,"安装包不存在"),
     INVALID_FILENAME(433,"非法的文件名"),
     DOWNLOAD_FAILED(434,"文件下载出错"),
-    UNKNOWN_VERSION_TYPE(435,"未知版本类型");
+    UNKNOWN_VERSION_TYPE(435,"未知版本类型"),
+    NOT_OFFICIAL_DOWNLOAD(436,"非官网下载");
 
     @Getter
     private final int code;

@@ -3,6 +3,7 @@ package com.aoyukmt.service.website;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
  * @ClassName：AoyukmtServiceWebsiteApplication
@@ -13,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(scanBasePackages = {"com.aoyukmt.common", "com.aoyukmt.service.website"})
 @MapperScan(basePackages = "com.aoyukmt.service.website.mapper")
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class AoyukmtServiceWebsiteApplication {
     public static void main(String[] args) {
         SpringApplication.run(AoyukmtServiceWebsiteApplication.class,args);

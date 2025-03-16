@@ -3,6 +3,7 @@ package com.aoyukmt.service.website.controller;
 import com.aoyukmt.common.result.Result;
 import com.aoyukmt.model.vo.HistoryAppVO;
 import com.aoyukmt.model.vo.LatestAppVO;
+import com.aoyukmt.service.website.annotation.DownloadRecord;
 import com.aoyukmt.service.website.service.DownloadService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,8 +44,9 @@ public class DownloadController {
      */
     @Operation(summary = "获取最新版的下载链接", description = "根据下载的安装包类型获取最新版本的下载链接")
     @PostMapping("/latest")
+    @DownloadRecord
     public Result<String> latestDownloadUrl(@RequestBody LatestAppVO latestAppVO) {
-        log.info("{}请求获取最新版本的 {} 下载链接...",latestAppVO.getUid(),latestAppVO.getPackageType());
+        log.info("{}请求获取最新版本的 {} 下载链接...", latestAppVO.getUid(), latestAppVO.getPackageType());
         String latestUrl = downloadService.getLatestUrl(latestAppVO);
         log.info("最新版本的下载链接：{}", latestUrl);
         return Result.success(latestUrl);
@@ -58,10 +60,11 @@ public class DownloadController {
      * @return: 安装包文件
      */
     @Operation(summary = "下载某个版本的安装包", description = "根据请求下载的应用全名下载对应的安装包")
-    @GetMapping("/{versionType}/{appFileName}")
-    public ResponseEntity<Resource> downloadLatest(@PathVariable String versionType, @PathVariable String appFileName) throws IOException {
-        log.info("请求下载 {} 版本,应用全名为 {} 的安装包：", versionType,appFileName);
-        Resource appFile = downloadService.getAppFile(versionType,appFileName);
+    @GetMapping("/{versionType}/{appFileName}/{downloadId}")
+    @DownloadRecord
+    public ResponseEntity<Resource> downloadApplication(@PathVariable String versionType, @PathVariable String appFileName, @PathVariable String downloadId) throws IOException {
+        log.info("前去下载id为：{} 请求下载 {} 版本,应用全名为 {} 的安装包：", downloadId, versionType, appFileName);
+        Resource appFile = downloadService.getAppFile(versionType, appFileName);
         System.out.println(appFile.contentLength());
         return ResponseEntity.ok()
                 .contentLength(appFile.contentLength())
@@ -80,6 +83,7 @@ public class DownloadController {
      */
     @Operation(summary = "获取某个历史版本的下载链接", description = "根据版本号和安装包类型获取对应的历史版本的安装包的下载链接")
     @PostMapping("/history")
+    @DownloadRecord
     public Result<String> historyDownloadUrl(@RequestBody HistoryAppVO historyAppVO) {
         log.info("{} 请求下载 版本为 {} 安装方式为 {} 的应用包：", historyAppVO.getUid(), historyAppVO.getVersion(), historyAppVO.getPackageType());
         String historyUrl = downloadService.getHistoryUrl(historyAppVO);

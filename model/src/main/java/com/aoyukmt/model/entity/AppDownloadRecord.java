@@ -40,6 +40,11 @@ public class AppDownloadRecord {
     /**
      * 下载的包类型（installer 或 zip）
      */
-    private String installerType;
+    private String packageType;
+
+    /**
+     * 是否成功返回安装包
+     */
+    private Boolean isSuccess;
 
 }

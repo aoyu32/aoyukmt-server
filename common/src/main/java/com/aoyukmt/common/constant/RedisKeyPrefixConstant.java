@@ -9,7 +9,10 @@ package com.aoyukmt.common.constant;
 
 public class RedisKeyPrefixConstant {
 
+    //请求限制key前缀
     public static final String RATE_LIMIT = "rate_limit:";
 
+    //唯一下载id的key前缀
+    public static  final String DOWNLOAD_ID = "download_id:";
 
 }

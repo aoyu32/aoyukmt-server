@@ -4,6 +4,7 @@ import com.aoyukmt.common.constant.DownloadConstants;
 import com.aoyukmt.common.constant.VersionTypeConstant;
 import com.aoyukmt.common.enumeration.ResultCode;
 import com.aoyukmt.common.exception.BusinessException;
+import com.aoyukmt.model.entity.AppDownloadRecord;
 import com.aoyukmt.model.vo.HistoryAppVO;
 import com.aoyukmt.model.vo.LatestAppVO;
 import com.aoyukmt.service.website.mapper.DownloadMapper;
@@ -55,12 +56,31 @@ public class DownloadServiceImpl implements DownloadService {
 
     /**
      * 获取最新版本的版本号
-     *
      * @return 版本号
      */
     @Override
     public String getLatestVersionNumber() {
         return downloadMapper.selectLatestVersionNumber();
+    }
+
+    /**
+     * 获取最新版本id
+     * @return 最新版本id
+     */
+    @Override
+    public Integer getLatestVersionId() {
+        return downloadMapper.selectLatestVersionId();
+    }
+
+
+    /**
+     * 更加版本号获取版本id
+     * @param version 版本号
+     * @return 版本id
+     */
+    @Override
+    public Integer getVersionId(String version) {
+        return  downloadMapper.selectVersionId(version);
     }
 
     /**
@@ -131,5 +151,15 @@ public class DownloadServiceImpl implements DownloadService {
             throw new BusinessException(ResultCode.RESOURCES_NOT_EXITS);
         }
         return historyUrl;
+    }
+
+    /**
+     * 添加一条用户下载记录
+     * @param appDownloadRecord 用户下载记录实体
+     */
+    @Override
+    public void addDownloadRecord(AppDownloadRecord appDownloadRecord) {
+        log.info("记录一条用户下载记录数据：{}", appDownloadRecord);
+        downloadMapper.insertDownloadRecord(appDownloadRecord);
     }
 }
