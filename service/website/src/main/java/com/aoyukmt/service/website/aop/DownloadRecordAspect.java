@@ -58,6 +58,7 @@ public class DownloadRecordAspect {
     // 返回后通知
     @Around("downloadRecordPointcut()")
     public Object downloadFileRecord(ProceedingJoinPoint joinPoint) throws Throwable {
+        log.info("======================【开始】记录用户下载信息日志============================");
         log.info("开始记录下载用户信息......");
 
         // 获取当前请求信息
@@ -68,8 +69,7 @@ public class DownloadRecordAspect {
             return null;
         }
         HttpServletRequest request = servletRequestAttributes.getRequest();
-
-        log.info("请求：{}", request);
+        log.info("HTTP请求：{}", request);
 
         // 获取请求客户端IP
         String userIP = request.getRemoteAddr();
@@ -77,9 +77,6 @@ public class DownloadRecordAspect {
         // 获取请求客户端user-agent
         String userAgent = request.getHeader("User-Agent");
         log.info("用户user-agent：{}", userAgent);
-
-        // 创建下载记录对象
-        AppDownloadRecord appDownloadRecord = new AppDownloadRecord();
 
         // 获取方法签名
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
@@ -91,6 +88,12 @@ public class DownloadRecordAspect {
         log.info("请求方法：{}", methodName);
         log.info("请求参数：{}", args);
 
+        //初始化下载记录对象
+        AppDownloadRecord appDownloadRecord = new AppDownloadRecord();
+        appDownloadRecord.setUserIp(userIP);
+        appDownloadRecord.setUserAgent(userAgent);
+        appDownloadRecord.setIsSuccess(false);
+
         // 判断是否是下载链接请求还是下载应用请求
         if (Set.of("latestDownloadUrl", "historyDownloadUrl").contains(methodName)) {
             log.info("处理下载链接请求");
@@ -100,13 +103,10 @@ public class DownloadRecordAspect {
                 Integer latestVersionId = downloadService.getLatestVersionId();
                 String uid = ((LatestAppVO) args[0]).getUid();
                 String packageType = ((LatestAppVO) args[0]).getPackageType();
+                log.info("记录下载链接请求 - 最新版：userId={}, versionId={}, packageType={}", uid, latestVersionId, packageType);
                 appDownloadRecord.setUserId(uid);
-                appDownloadRecord.setUserIp(userIP);
-                appDownloadRecord.setUserAgent(userAgent);
                 appDownloadRecord.setVersionId(latestVersionId);
                 appDownloadRecord.setPackageType(packageType);
-                appDownloadRecord.setIsSuccess(false);
-                log.info("记录下载链接请求 - 最新版：userId={}, versionId={}, packageType={}", uid, latestVersionId, packageType);
             }
 
             // 如果是请求历史版本下载链接
@@ -116,11 +116,8 @@ public class DownloadRecordAspect {
                 String uid = ((HistoryAppVO) args[0]).getUid();
                 String packageType = ((HistoryAppVO) args[0]).getPackageType();
                 appDownloadRecord.setUserId(uid);
-                appDownloadRecord.setUserIp(userIP);
-                appDownloadRecord.setUserAgent(userAgent);
                 appDownloadRecord.setVersionId(versionId);
                 appDownloadRecord.setPackageType(packageType);
-                appDownloadRecord.setIsSuccess(false);
                 log.info("记录下载链接请求 - 历史版：userId={}, versionId={}, packageType={}", uid, versionId, packageType);
             }
 
@@ -152,11 +149,13 @@ public class DownloadRecordAspect {
                 downloadRecord = (AppDownloadRecord) redisTemplate.opsForValue().get(RedisKeyPrefixConstant.DOWNLOAD_ID + downloadId);
                 if (downloadRecord == null) {
                     log.error("下载记录不存在，可能是非法请求");
-                    throw new BusinessException(ResultCode.NOT_OFFICIAL_DOWNLOAD);
+                    throw new BusinessException(ResultCode.LINK_BROKEN);
                 } else {
                     redisTemplate.delete(RedisKeyPrefixConstant.DOWNLOAD_ID + downloadId);
                     log.info("下载记录已删除，下载ID: {}", downloadId);
                 }
+            }else {
+                throw new BusinessException(ResultCode.LINK_BROKEN);
             }
 
             // 执行原方法
@@ -186,6 +185,7 @@ public class DownloadRecordAspect {
             log.info("下载记录已插入数据库");
 
         }
+        log.info("======================【结束】记录用户下载信息日志============================");
 
         // 其他带有注解的方法
         return joinPoint.proceed();

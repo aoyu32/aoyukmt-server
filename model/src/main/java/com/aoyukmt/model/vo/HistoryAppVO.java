@@ -1,5 +1,8 @@
 package com.aoyukmt.model.vo;
 
+import com.aoyukmt.annotation.PackageTypeValidation;
+import com.aoyukmt.annotation.VersionValidation;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 /**
@@ -15,16 +18,20 @@ public class HistoryAppVO {
     /**
      * 下载用户id
      */
+    @NotBlank
     private String uid;
 
     /**
      * 版本号
      */
+
+    @VersionValidation
     private String version;
 
     /**
      * 安装包类型
      */
+    @PackageTypeValidation
     private String packageType;
 
 }

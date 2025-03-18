@@ -40,15 +40,6 @@ public class AppVersionLogDTO {
      */
     private String changelogUrl;
 
-//    /**
-//     * 安装程序 (EXE) 下载链接
-//     */
-//    private String installerUrl;
-//
-//    /**
-//     * 完整安装包 (ZIP) 下载链接
-//     */
-//    private String zipPackageUrl;
 
     /**
      * 安装包 SHA-256 哈希值

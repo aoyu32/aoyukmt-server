@@ -1,5 +1,7 @@
 package com.aoyukmt.service.website.controller;
 
+import com.aoyukmt.annotation.AppNameValidation;
+import com.aoyukmt.annotation.VersionTypeValidation;
 import com.aoyukmt.common.result.Result;
 import com.aoyukmt.model.vo.HistoryAppVO;
 import com.aoyukmt.model.vo.LatestAppVO;
@@ -7,6 +9,7 @@ import com.aoyukmt.service.website.annotation.DownloadRecord;
 import com.aoyukmt.service.website.service.DownloadService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -26,6 +30,7 @@ import java.io.IOException;
  */
 @Tag(name = "应用下载", description = "官网请求下载安装包")
 @RestController
+@Validated
 @RequestMapping("/web/download")
 public class DownloadController {
 
@@ -62,17 +67,17 @@ public class DownloadController {
     @Operation(summary = "下载某个版本的安装包", description = "根据请求下载的应用全名下载对应的安装包")
     @GetMapping("/{versionType}/{appFileName}/{downloadId}")
     @DownloadRecord
-    public ResponseEntity<Resource> downloadApplication(@PathVariable String versionType, @PathVariable String appFileName, @PathVariable String downloadId) throws IOException {
+    public ResponseEntity<Resource> downloadApplication(@PathVariable @VersionTypeValidation String versionType,
+                                                        @PathVariable @AppNameValidation String appFileName,
+                                                        @PathVariable String downloadId) throws IOException {
         log.info("前去下载id为：{} 请求下载 {} 版本,应用全名为 {} 的安装包：", downloadId, versionType, appFileName);
         Resource appFile = downloadService.getAppFile(versionType, appFileName);
-        System.out.println(appFile.contentLength());
         return ResponseEntity.ok()
                 .contentLength(appFile.contentLength())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + appFile.getFilename() + "\"")
                 .body(appFile);
     }
-
 
     /**
      * @description: 历史版本下载链接接口
@@ -84,7 +89,7 @@ public class DownloadController {
     @Operation(summary = "获取某个历史版本的下载链接", description = "根据版本号和安装包类型获取对应的历史版本的安装包的下载链接")
     @PostMapping("/history")
     @DownloadRecord
-    public Result<String> historyDownloadUrl(@RequestBody HistoryAppVO historyAppVO) {
+    public Result<String> historyDownloadUrl(@RequestBody @Valid HistoryAppVO historyAppVO) {
         log.info("{} 请求下载 版本为 {} 安装方式为 {} 的应用包：", historyAppVO.getUid(), historyAppVO.getVersion(), historyAppVO.getPackageType());
         String historyUrl = downloadService.getHistoryUrl(historyAppVO);
         log.info("历史版本：{} 的 {} 安装包下载链接 {}", historyAppVO.getVersion(), historyAppVO.getPackageType(), historyUrl);

@@ -75,4 +75,19 @@ public class Result<T> {
         return result;
     }
 
+    /**
+     * 带数据的错误返回结果
+     * @param resultCode 响应结果枚举
+     * @param data 返回的错误数据
+     * @return result
+     * @param <T> 任意类型
+     */
+    public static <T> Result<T> error(ResultCode resultCode,T data) {
+        Result<T> result = new Result<>();
+        result.setCode(resultCode.getCode());
+        result.setMessage(resultCode.getMsg());
+        result.setData(data);
+        return result;
+    }
+
 }

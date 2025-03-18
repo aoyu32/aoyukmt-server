@@ -18,7 +18,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.Set;
 
 /**
  * @ClassName：DownloadServiceImpl
@@ -74,7 +73,7 @@ public class DownloadServiceImpl implements DownloadService {
 
 
     /**
-     * 更加版本号获取版本id
+     * 根据版本号获取版本id
      * @param version 版本号
      * @return 版本id
      */
@@ -91,12 +90,6 @@ public class DownloadServiceImpl implements DownloadService {
      */
     @Override
     public Resource getAppFile(String versionType, String appFileName) {
-        // 验证文件名格式
-        if (appFileName == null || appFileName.isEmpty() || appFileName.contains("..") ||
-                appFileName.contains("/") || appFileName.contains("\\")) {
-            log.warn("非法文件名请求: {}", appFileName);
-            throw new BusinessException(ResultCode.INVALID_FILENAME);
-        }
 
         //  获取文件扩展名
         String extension = "";
@@ -105,13 +98,7 @@ public class DownloadServiceImpl implements DownloadService {
             extension = appFileName.substring(lastDotIndex).toLowerCase();
         }
 
-        //判断版本类型是否合法
-        Set<String> types = Set.of(VersionTypeConstant.LATEST_VERSION, VersionTypeConstant.HISTORY_VERSION);
-        if (!types.contains(versionType)) {
-            throw new BusinessException(ResultCode.UNKNOWN_VERSION_TYPE);
-        }
-
-        //  构建本地文件路径
+         //  构建本地文件路径
         String filePath = appResourcesPath + File.separator;
         if (extension.equals(DownloadConstants.EXE_FILE)) {
             filePath = filePath + versionType + File.separator + DownloadConstants.INSTALLER + File.separator + appFileName;
