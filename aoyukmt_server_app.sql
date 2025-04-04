@@ -298,5 +298,9 @@ CREATE TABLE `app_download_record` (
   CONSTRAINT `fk_download_record_version_id` FOREIGN KEY (`version_id`) REFERENCES `app_version_log` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户下载记录表，存储用户的下载行为，包含下载包类型、IP 和时间等';
 
+-- 用户相关表
+
+
+
 	
 	

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * @Description: aoyukmt网站服务启动类
  */
 
-@SpringBootApplication(scanBasePackages = {"com.aoyukmt.common", "com.aoyukmt.service.website"})
+@SpringBootApplication(scanBasePackages = {"com.aoyukmt.common", "com.aoyukmt.service.website","com.anji.captcha"})
 @MapperScan(basePackages = "com.aoyukmt.service.website.mapper")
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class AoyukmtServiceWebsiteApplication {
