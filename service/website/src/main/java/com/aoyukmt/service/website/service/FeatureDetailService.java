@@ -1,7 +1,6 @@
 package com.aoyukmt.service.website.service;
 
-import com.aoyukmt.model.vo.FeatureDetailCardVO;
-import org.springframework.web.multipart.MultipartFile;
+import com.aoyukmt.model.vo.resp.FeatureDetailCardVO;
 
 import java.util.List;
 

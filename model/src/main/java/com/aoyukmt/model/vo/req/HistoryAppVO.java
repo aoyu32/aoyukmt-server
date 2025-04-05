@@ -1,4 +1,4 @@
-package com.aoyukmt.model.vo;
+package com.aoyukmt.model.vo.req;
 
 import com.aoyukmt.annotation.PackageTypeValidation;
 import com.aoyukmt.annotation.VersionValidation;

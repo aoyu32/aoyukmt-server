@@ -24,22 +24,17 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 public class CaptchaConfig {
 
     @Autowired
-    private StringRedisTemplate redisTemplate;
+    StringRedisTemplate redisTemplate;
 
-    @Bean(name = "CaptchaCacheService")
+    @Bean(name = "AjCaptchaCacheService")
     @Primary
-    public CaptchaCacheService captchaCacheService() {
-        CaptchaCacheServiceRedisImpl redisCacheService = new CaptchaCacheServiceRedisImpl();
-        redisCacheService.setStringRedisTemplate(redisTemplate);
-        return redisCacheService;
+    public CaptchaCacheService captchaCacheService(AjCaptchaProperties config){
+        //缓存类型redis/local/....
+        CaptchaCacheService ret = CaptchaServiceFactory.getCache(config.getCacheType().name());
+        if(ret instanceof CaptchaCacheServiceRedisImpl){
+            ((CaptchaCacheServiceRedisImpl)ret).setStringRedisTemplate(redisTemplate);
+        }
+        return ret;
     }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public MessageSource messageSource() {
-        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasenames("messages/messages", "captcha/messages");
-        messageSource.setDefaultEncoding("UTF-8");
-        return messageSource;
-    }
 }

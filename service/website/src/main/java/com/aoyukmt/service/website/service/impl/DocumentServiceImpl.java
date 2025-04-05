@@ -1,16 +1,12 @@
 package com.aoyukmt.service.website.service.impl;
 
 import com.aoyukmt.model.dto.DocumentWithCategoryDTO;
-import com.aoyukmt.model.vo.DocumentWithCategoryVO;
 import com.aoyukmt.service.website.mapper.DocumentMapper;
 import com.aoyukmt.service.website.service.DocumentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -1,7 +1,7 @@
 package com.aoyukmt.service.website.service.impl;
 
 import com.aoyukmt.model.entity.Feature;
-import com.aoyukmt.model.vo.FeatureCardVO;
+import com.aoyukmt.model.vo.resp.FeatureCardVO;
 import com.aoyukmt.service.website.mapper.FeatureMapper;
 import com.aoyukmt.service.website.service.FeatureService;
 import org.slf4j.Logger;

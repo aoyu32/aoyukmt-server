@@ -29,7 +29,19 @@ public enum ResultCode {
     INVALID_FILENAME(433, "非法的文件名"),
     DOWNLOAD_FAILED(434, "文件下载出错"),
     UNKNOWN_VERSION_TYPE(435, "未知版本类型"),
-    LINK_BROKEN(436,"失效的链接");
+    LINK_BROKEN(436,"失效的链接"),
+
+    /**
+     * 验证码异常
+     */
+    VERIFY_CODE_ERROR(437,"验证码验证异常"),
+
+    /**
+     * 用户注册
+     */
+    USER_ALREADY_EXIST(438,"用户已存在");
+
+
 
 
     @Getter

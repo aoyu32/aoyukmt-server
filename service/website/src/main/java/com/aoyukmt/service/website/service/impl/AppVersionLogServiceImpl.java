@@ -30,7 +30,6 @@ public class AppVersionLogServiceImpl implements AppVersionLogService {
     @Override
     public AppVersionLogDTO getLatestVersionLog() {
         log.info("获取最新版本日志信息...");
-//        throw new BusinessException(ResultCode.SERVICE_UNAVAILABLE);
         return appVersionLogMapper.getLatestVersionLog();
     }
 
@@ -41,7 +40,6 @@ public class AppVersionLogServiceImpl implements AppVersionLogService {
     @Override
     public List<AppVersionLogDTO> getLatestVersionLog(String versionType) {
         log.info("获取 {} 版本日志信息...", versionType);
-//        throw new BusinessException(ResultCode.SYSTEM_ERROR);
         return appVersionLogMapper.selectVersionLogByType(versionType);
     }
 }

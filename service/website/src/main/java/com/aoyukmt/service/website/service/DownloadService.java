@@ -1,8 +1,8 @@
 package com.aoyukmt.service.website.service;
 
 import com.aoyukmt.model.entity.AppDownloadRecord;
-import com.aoyukmt.model.vo.HistoryAppVO;
-import com.aoyukmt.model.vo.LatestAppVO;
+import com.aoyukmt.model.vo.req.HistoryAppVO;
+import com.aoyukmt.model.vo.req.LatestAppVO;
 import org.springframework.core.io.Resource;
 
 /**

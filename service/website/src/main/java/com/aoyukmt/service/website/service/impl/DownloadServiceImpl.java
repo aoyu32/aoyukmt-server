@@ -1,12 +1,11 @@
 package com.aoyukmt.service.website.service.impl;
 
 import com.aoyukmt.common.constant.DownloadConstants;
-import com.aoyukmt.common.constant.VersionTypeConstant;
 import com.aoyukmt.common.enumeration.ResultCode;
 import com.aoyukmt.common.exception.BusinessException;
 import com.aoyukmt.model.entity.AppDownloadRecord;
-import com.aoyukmt.model.vo.HistoryAppVO;
-import com.aoyukmt.model.vo.LatestAppVO;
+import com.aoyukmt.model.vo.req.HistoryAppVO;
+import com.aoyukmt.model.vo.req.LatestAppVO;
 import com.aoyukmt.service.website.mapper.DownloadMapper;
 import com.aoyukmt.service.website.service.DownloadService;
 import org.slf4j.Logger;

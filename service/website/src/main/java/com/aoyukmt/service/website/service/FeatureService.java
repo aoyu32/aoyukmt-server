@@ -1,6 +1,6 @@
 package com.aoyukmt.service.website.service;
 
-import com.aoyukmt.model.vo.FeatureCardVO;
+import com.aoyukmt.model.vo.resp.FeatureCardVO;
 
 import java.util.List;
 

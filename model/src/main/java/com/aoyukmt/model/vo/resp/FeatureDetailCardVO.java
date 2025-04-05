@@ -1,4 +1,4 @@
-package com.aoyukmt.model.vo;
+package com.aoyukmt.model.vo.resp;
 
 import lombok.Data;
 

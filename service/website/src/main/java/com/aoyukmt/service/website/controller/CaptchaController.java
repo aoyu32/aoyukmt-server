@@ -4,12 +4,13 @@ import com.anji.captcha.model.common.ResponseModel;
 import com.anji.captcha.model.vo.CaptchaVO;
 import com.anji.captcha.service.CaptchaService;
 import com.anji.captcha.util.StringUtils;
-import jakarta.annotation.Resource;
+import com.aoyukmt.common.result.Result;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,23 +25,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/web/captcha")
+@Tag(name = "人机验证",description = "人机检测验证码相关接口，包括获取滑块验证码的背景图片，滑块图片，以及对滑动数据的检测，以及二次校验")
 public class CaptchaController {
     private static final Logger log = LoggerFactory.getLogger(CaptchaController.class);
     @Autowired
     private CaptchaService captchaService;
 
     @PostMapping("/get")
-    public ResponseModel get(@RequestBody CaptchaVO data, HttpServletRequest request) {
+    @Operation(summary = "获取滑块验证码",description = "获取滑块验证码的背景图和滑块图以及校验数据")
+    public Result<ResponseModel> get(@RequestBody CaptchaVO data, HttpServletRequest request) {
         assert request.getRemoteHost()!=null;
         data.setBrowserInfo(getRemoteId(request));
-        return captchaService.get(data);
+        return Result.success(captchaService.get(data));
     }
 
     @PostMapping("/check")
-    public ResponseModel check(@RequestBody CaptchaVO data, HttpServletRequest request) {
+    @Operation(summary = "校验滑块验证码",description = "校验滑块验证码的有效性")
+    public Result<ResponseModel> check(@RequestBody CaptchaVO data, HttpServletRequest request) {
         log.info("check{}",data.getToken());
         data.setBrowserInfo(getRemoteId(request));
-        return captchaService.check(data);
+        return Result.success(captchaService.check(data));
     }
 
     /***
@@ -50,9 +54,9 @@ public class CaptchaController {
      * @return
      */
     @PostMapping("/verify")
-    public ResponseModel verify(@RequestBody CaptchaVO data, HttpServletRequest request) {
-
-        return captchaService.verification(data);
+    @Operation(summary = "对滑块验证码的二次校验",description = "对滑块验证进行二次校验")
+    public Result<ResponseModel> verify(@RequestBody CaptchaVO data, HttpServletRequest request) {
+        return Result.success( captchaService.verification(data));
     }
 
     public static final String getRemoteId(HttpServletRequest request) {
