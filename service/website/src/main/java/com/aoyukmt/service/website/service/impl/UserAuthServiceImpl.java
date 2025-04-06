@@ -3,8 +3,10 @@ package com.aoyukmt.service.website.service.impl;
 import com.anji.captcha.model.common.ResponseModel;
 import com.anji.captcha.model.vo.CaptchaVO;
 import com.anji.captcha.service.CaptchaService;
+import com.aoyukmt.common.avatar.DiceBearAvatarGenerator;
 import com.aoyukmt.common.enumeration.ResultCode;
 import com.aoyukmt.common.exception.BusinessException;
+import com.aoyukmt.common.result.Result;
 import com.aoyukmt.common.utils.PasswordUtils;
 import com.aoyukmt.common.utils.UserInfoUtils;
 import com.aoyukmt.model.vo.req.UserRegisterVO;
@@ -67,10 +69,11 @@ public class UserAuthServiceImpl implements UserAuthService {
         UserProfileRegisterDTO userProfile = new UserProfileRegisterDTO();
         //生成随机昵称
         String randomNickname = UserInfoUtils.getRandomNickname();
+
         //生成随机头像url
-//        String randomAvatarUrl = UserInfoUtils.getRandomAvatarUrl(randomNickname,50);
+        String randomAvatarUrl = DiceBearAvatarGenerator.generateRandomAvatarUrl();
         userProfile.setNickname(randomNickname);
-//        userProfile.setAvatar(randomAvatarUrl);
+        userProfile.setAvatar(randomAvatarUrl);
 
         //插入用户基本信息
         userProfileMapper.insert(userProfile);

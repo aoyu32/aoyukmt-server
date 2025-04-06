@@ -34,7 +34,7 @@ public class UserAuthController {
     public Result<?> register(@RequestBody UserRegisterVO userRegisterVO) {
         log.info("用户注册信息：{}", userRegisterVO);
         userAuthService.register(userRegisterVO);
-        return Result.success();
+        return Result.success("success");
     }
 
 

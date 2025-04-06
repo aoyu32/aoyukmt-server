@@ -19,12 +19,14 @@ CREATE TABLE `user_profile` (
   KEY `idx_create_time` (`create_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户基本信息表' AUTO_INCREMENT = 10000;
 
+
+-- 用户认证信息表
 CREATE TABLE `user_auth` (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '认证ID',
   `uid` bigint UNSIGNED NOT NULL COMMENT '关联的用户ID',
   `username` varchar(64) NOT NULL COMMENT '用户名(登录用)',
   `email` varchar(255) DEFAULT NULL COMMENT '用户邮箱(登录和验证用)',
-  `salt` varchar(64) DEFAULT NULL COMMENT '密码盐值',
+  `password` VARCHAR(255) NOT NULL COMMENT '用户登录密码',
   `last_login_ip` varchar(64) DEFAULT NULL COMMENT '上次登录IP',
   `last_login_time` timestamp NULL DEFAULT NULL COMMENT '上次登录时间',
   `login_failed_count` int DEFAULT 0 COMMENT '连续登录失败次数',
@@ -33,11 +35,10 @@ CREATE TABLE `user_auth` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_username` (`username`),
   UNIQUE KEY `uk_email` (`email`),
-  KEY `idx_uid` (`uid`),
-  CONSTRAINT `fk_user_auth_profile` FOREIGN KEY (`uid`) REFERENCES `user_profile` (`id`) ON DELETE CASCADE
+  KEY `idx_uid` (`uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户认证信息表' AUTO_INCREMENT = 10000;
 
-
+-- 用户封禁记录表 (移除外键约束)
 CREATE TABLE `user_bans` (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '封禁记录ID',
   `uid` bigint UNSIGNED NOT NULL COMMENT '关联的用户ID',
@@ -52,6 +53,5 @@ CREATE TABLE `user_bans` (
   PRIMARY KEY (`id`),
   KEY `idx_uid` (`uid`),
   KEY `idx_expires_at` (`expires_at`),
-  KEY `idx_status` (`status`),
-  CONSTRAINT `fk_user_bans_profile` FOREIGN KEY (`uid`) REFERENCES `user_profile` (`id`) ON DELETE CASCADE
+  KEY `idx_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户封禁记录表';
