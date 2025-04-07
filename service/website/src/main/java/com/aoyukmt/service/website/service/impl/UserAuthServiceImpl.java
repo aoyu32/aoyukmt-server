@@ -6,19 +6,27 @@ import com.anji.captcha.service.CaptchaService;
 import com.aoyukmt.common.avatar.DiceBearAvatarGenerator;
 import com.aoyukmt.common.enumeration.ResultCode;
 import com.aoyukmt.common.exception.BusinessException;
-import com.aoyukmt.common.result.Result;
+import com.aoyukmt.common.utils.JwtUtils;
 import com.aoyukmt.common.utils.PasswordUtils;
 import com.aoyukmt.common.utils.UserInfoUtils;
-import com.aoyukmt.model.vo.req.UserRegisterVO;
+import com.aoyukmt.model.vo.req.UserLoginReqVO;
+import com.aoyukmt.model.vo.req.UserRegisterReqVO;
 import com.aoyukmt.model.dto.UserAuthRegisterDTO;
 import com.aoyukmt.model.dto.UserProfileRegisterDTO;
+import com.aoyukmt.model.vo.resp.UserLoginRespVO;
 import com.aoyukmt.service.website.mapper.UserAuthMapper;
 import com.aoyukmt.service.website.mapper.UserProfileMapper;
 import com.aoyukmt.service.website.service.UserAuthService;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @ClassName：UserAuthServiceImpl
@@ -40,16 +48,19 @@ public class UserAuthServiceImpl implements UserAuthService {
     @Autowired
     private UserProfileMapper userProfileMapper;
 
+    @Autowired
+    private JwtUtils jwtUtils;
+
     /**
      * 用户注册
-     * @param userRegisterVO 用户注册数据
+     * @param userRegisterReqVO 用户注册数据
      */
     @Transactional
     @Override
-    public void register(UserRegisterVO userRegisterVO) {
+    public UserLoginRespVO register(UserRegisterReqVO userRegisterReqVO, HttpServletRequest request) {
         //进行滑块验证二次验证
         CaptchaVO captchaVO = new CaptchaVO();
-        captchaVO.setCaptchaVerification(userRegisterVO.getVerifyCode());
+        captchaVO.setCaptchaVerification(userRegisterReqVO.getVerifyCode());
         ResponseModel verification = captchaService.verification(captchaVO);
         log.info("二次验证结果：{}",verification);
         if(!verification.getRepCode().equals("0000")){
@@ -57,14 +68,14 @@ public class UserAuthServiceImpl implements UserAuthService {
         }
 
         //判断用户名是否存在
-        String existUser = userAuthMapper.getUserByUsername(userRegisterVO.getUsername());
+        String existUser = userAuthMapper.getUserByUsername(userRegisterReqVO.getUsername());
         if(existUser != null){
             throw new BusinessException(ResultCode.USER_ALREADY_EXIST);
         }
 
         //注册用户
         //密码加密
-        String encrypt = PasswordUtils.encrypt(userRegisterVO.getPassword());
+        String encrypt = PasswordUtils.encrypt(userRegisterReqVO.getPassword());
         //创建用户信息实体
         UserProfileRegisterDTO userProfile = new UserProfileRegisterDTO();
         //生成随机昵称
@@ -75,15 +86,59 @@ public class UserAuthServiceImpl implements UserAuthService {
         userProfile.setNickname(randomNickname);
         userProfile.setAvatar(randomAvatarUrl);
 
+        //获取用户ip信息
+        String userIp = UserInfoUtils.getClientIp(request);
+        log.info("用户ip:{}",userIp);
+        JsonObject userIpJson = new JsonObject();
+        userIpJson.addProperty("ip",userIp);
+        Gson gson = new Gson();
+        String userIpInfo = gson.toJson(userIpJson);
+        log.info("用户ip json:{}",userIpInfo);
+        userProfile.setIpInfo(userIpInfo);
+
+
         //插入用户基本信息
         userProfileMapper.insert(userProfile);
         //创建用户认证实体
         UserAuthRegisterDTO userAuth = new UserAuthRegisterDTO();
-        userAuth.setUsername(userRegisterVO.getUsername());
+        userAuth.setUsername(userRegisterReqVO.getUsername());
         userAuth.setPassword(encrypt);
         log.info("注册的用户id:{}",userProfile.getId());
         userAuth.setUid(userProfile.getId());
         //插入用户认证信息
         userAuthMapper.insert(userAuth);
+
+        //生成token，返回用户信息
+        Map<String,Object> claims = new HashMap<>();
+        claims.put("username",userAuth.getUsername());
+        String token = jwtUtils.generateToken(Long.toString(userAuth.getUid()), claims);
+
+        log.info("生成的登录token:{}",token);
+
+        //封装返回登录后的用户信息
+        UserLoginRespVO user = new UserLoginRespVO();
+        user.setNickname(userProfile.getNickname());
+        user.setAvatar(userProfile.getAvatar());
+        user.setBio("该用户很懒，没有任何简介");
+        user.setUid(userAuth.getUid());
+        user.setGender(0);
+        user.setIpInfo(userProfile.getIpInfo());
+        user.setActiveStatus(1);
+        user.setToken(token);
+
+        return user;
+
+
+
+
+    }
+
+    /**
+     * 用户登录
+     * @param userLoginReqVO 用户登录参数
+     */
+    @Override
+    public void login(UserLoginReqVO userLoginReqVO) {
+
     }
 }

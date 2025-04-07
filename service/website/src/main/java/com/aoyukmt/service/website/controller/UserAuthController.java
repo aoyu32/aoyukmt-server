@@ -1,10 +1,12 @@
 package com.aoyukmt.service.website.controller;
 
 import com.aoyukmt.common.result.Result;
-import com.aoyukmt.model.vo.req.UserRegisterVO;
+import com.aoyukmt.model.vo.req.UserRegisterReqVO;
+import com.aoyukmt.model.vo.resp.UserLoginRespVO;
 import com.aoyukmt.service.website.service.UserAuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,11 +33,16 @@ public class UserAuthController {
 
     @Operation(summary = "用户注册", description = "用户注册接口")
     @PostMapping("/register")
-    public Result<?> register(@RequestBody UserRegisterVO userRegisterVO) {
-        log.info("用户注册信息：{}", userRegisterVO);
-        userAuthService.register(userRegisterVO);
-        return Result.success("success");
+    public Result<?> register(@RequestBody UserRegisterReqVO userRegisterReqVO, HttpServletRequest request) {
+        log.info("用户注册信息：{}", userRegisterReqVO);
+        UserLoginRespVO user = userAuthService.register(userRegisterReqVO, request);
+        return Result.success(user);
     }
 
+    @PostMapping("/login")
+    public Result<?> login(){
+
+        return Result.success();
+    }
 
 }

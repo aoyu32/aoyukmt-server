@@ -6,8 +6,6 @@ CREATE TABLE `user_profile` (
   `bio` varchar(500) DEFAULT NULL COMMENT '用户简介',
   `active_status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '在线状态: 1-在线, 2-离线',
   `registration_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
-  `last_login_time` timestamp NULL DEFAULT NULL COMMENT '最后一次登录时间',
-  `last_login_ip` varchar(64) DEFAULT NULL COMMENT '最后登录IP',
   `ip_info` json DEFAULT NULL COMMENT 'IP地理位置等信息',
   `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '账户状态: 1-正常, 2-非活跃, 3-封禁',
   `delete_status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除: 0-正常, 1-已删除',
@@ -55,3 +53,5 @@ CREATE TABLE `user_bans` (
   KEY `idx_expires_at` (`expires_at`),
   KEY `idx_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户封禁记录表';
+
+

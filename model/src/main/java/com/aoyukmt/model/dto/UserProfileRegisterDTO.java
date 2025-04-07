@@ -1,5 +1,6 @@
 package com.aoyukmt.model.dto;
 
+import com.google.gson.JsonObject;
 import lombok.Data;
 
 /**
@@ -20,5 +21,8 @@ public class UserProfileRegisterDTO {
 
     /** 用户头像URL */
     private String avatar;
+
+    /**用户ip信息**/
+    private String ipInfo;
 
 }

@@ -19,7 +19,7 @@ public interface UserProfileMapper {
      * 插入一条用户注册信息
      * @param userProfileRegisterDTO 用户注册的基本信息
      */
-    @Insert("insert into user_profile(nickname,avatar) values (#{nickname},#{avatar})")
+    @Insert("insert into user_profile(nickname,avatar,ip_info) values (#{nickname},#{avatar},#{ipInfo})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void insert(UserProfileRegisterDTO userProfileRegisterDTO);
 

@@ -10,7 +10,7 @@ import lombok.Data;
  */
 
 @Data
-public class UserRegisterVO {
+public class UserRegisterReqVO {
 
     /**
      * 滑块验证二次校验码

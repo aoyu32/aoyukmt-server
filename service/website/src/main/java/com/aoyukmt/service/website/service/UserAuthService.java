@@ -1,6 +1,9 @@
 package com.aoyukmt.service.website.service;
 
-import com.aoyukmt.model.vo.req.UserRegisterVO;
+import com.aoyukmt.model.vo.req.UserLoginReqVO;
+import com.aoyukmt.model.vo.req.UserRegisterReqVO;
+import com.aoyukmt.model.vo.resp.UserLoginRespVO;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @InterfaceName：UserAuthService
@@ -11,6 +14,16 @@ import com.aoyukmt.model.vo.req.UserRegisterVO;
 
 public interface UserAuthService {
 
-    void register(UserRegisterVO userRegisterVO);
+    /**
+     * 用户注册
+     * @param userRegisterReqVO 用户注册参数
+     */
+    UserLoginRespVO register(UserRegisterReqVO userRegisterReqVO, HttpServletRequest request);
+
+    /**
+     * 用户登录
+     * @param userLoginReqVO 用户登录参数
+     */
+    void login(UserLoginReqVO userLoginReqVO);
 
 }

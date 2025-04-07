@@ -28,4 +28,5 @@ public class UserAuthRegisterDTO {
      */
     private String password;
 
+
 }
