@@ -6,6 +6,7 @@ import com.aoyukmt.common.enumeration.ResultCode;
 import com.aoyukmt.common.exception.BusinessException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +24,9 @@ import java.util.concurrent.TimeUnit;
  */
 
 @Component
+@Slf4j
 public class DownloadInterceptor implements HandlerInterceptor {
 
-    private static final Logger log = LoggerFactory.getLogger(DownloadInterceptor.class);
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 

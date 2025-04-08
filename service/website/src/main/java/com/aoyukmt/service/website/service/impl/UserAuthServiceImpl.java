@@ -57,7 +57,7 @@ public class UserAuthServiceImpl implements UserAuthService {
      */
     @Transactional
     @Override
-    public UserLoginRespVO register(UserRegisterReqVO userRegisterReqVO, HttpServletRequest request) {
+    public String register(UserRegisterReqVO userRegisterReqVO, HttpServletRequest request) {
         //进行滑块验证二次验证
         CaptchaVO captchaVO = new CaptchaVO();
         captchaVO.setCaptchaVerification(userRegisterReqVO.getVerifyCode());
@@ -115,22 +115,17 @@ public class UserAuthServiceImpl implements UserAuthService {
 
         log.info("生成的登录token:{}",token);
 
-        //封装返回登录后的用户信息
-        UserLoginRespVO user = new UserLoginRespVO();
-        user.setNickname(userProfile.getNickname());
-        user.setAvatar(userProfile.getAvatar());
-        user.setBio("该用户很懒，没有任何简介");
-        user.setUid(userAuth.getUid());
-        user.setGender(0);
-        user.setIpInfo(userProfile.getIpInfo());
-        user.setActiveStatus(1);
-        user.setToken(token);
-
-        return user;
-
-
-
-
+//        //封装返回登录后的用户信息
+//        UserLoginRespVO user = new UserLoginRespVO();
+//        user.setNickname(userProfile.getNickname());
+//        user.setAvatar(userProfile.getAvatar());
+//        user.setBio("该用户很懒，没有任何简介");
+//        user.setUid(userAuth.getUid());
+//        user.setGender(0);
+//        user.setIpInfo(userProfile.getIpInfo());
+//        user.setActiveStatus(1);
+//        user.setToken(token);
+        return token;
     }
 
     /**

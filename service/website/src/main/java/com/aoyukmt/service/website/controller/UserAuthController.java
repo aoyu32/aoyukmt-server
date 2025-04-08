@@ -35,8 +35,8 @@ public class UserAuthController {
     @PostMapping("/register")
     public Result<?> register(@RequestBody UserRegisterReqVO userRegisterReqVO, HttpServletRequest request) {
         log.info("用户注册信息：{}", userRegisterReqVO);
-        UserLoginRespVO user = userAuthService.register(userRegisterReqVO, request);
-        return Result.success(user);
+        String userAuthToken = userAuthService.register(userRegisterReqVO, request);
+        return Result.success(userAuthToken);
     }
 
     @PostMapping("/login")

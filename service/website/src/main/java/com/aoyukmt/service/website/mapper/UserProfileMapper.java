@@ -1,5 +1,6 @@
 package com.aoyukmt.service.website.mapper;
 
+import com.aoyukmt.model.dto.UserInfoDTO;
 import com.aoyukmt.model.dto.UserProfileRegisterDTO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -22,5 +23,7 @@ public interface UserProfileMapper {
     @Insert("insert into user_profile(nickname,avatar,ip_info) values (#{nickname},#{avatar},#{ipInfo})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void insert(UserProfileRegisterDTO userProfileRegisterDTO);
+    UserInfoDTO selectUserInfoByUid(Long uid);
+
 
 }

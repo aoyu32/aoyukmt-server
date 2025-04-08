@@ -39,7 +39,18 @@ public enum ResultCode {
     /**
      * 用户注册
      */
-    USER_ALREADY_EXIST(438,"用户已存在");
+    USER_ALREADY_EXIST(438,"用户已存在"),
+
+    /**
+     * token过期
+     */
+    TOKEN_EXPIRED(439,"token过期"),
+
+    /**
+     * 无效的token
+     */
+    TOKEN_VALIDATE_FAIL(440,"无效的token");
+
 
 
 

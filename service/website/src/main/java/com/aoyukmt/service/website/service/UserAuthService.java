@@ -18,7 +18,7 @@ public interface UserAuthService {
      * 用户注册
      * @param userRegisterReqVO 用户注册参数
      */
-    UserLoginRespVO register(UserRegisterReqVO userRegisterReqVO, HttpServletRequest request);
+    String register(UserRegisterReqVO userRegisterReqVO, HttpServletRequest request);
 
     /**
      * 用户登录

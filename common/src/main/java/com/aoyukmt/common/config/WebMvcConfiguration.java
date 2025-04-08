@@ -1,6 +1,7 @@
 package com.aoyukmt.common.config;
 
 import com.aoyukmt.common.interceptor.DownloadInterceptor;
+import com.aoyukmt.common.interceptor.JwtInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -19,6 +20,9 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Autowired
     private DownloadInterceptor downloadInterceptor;
 
+    @Autowired
+    private JwtInterceptor jwtInterceptor;
+
     //前后端跨域处理
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -36,5 +40,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(downloadInterceptor)
                 .addPathPatterns("/web/download/**");
+
+        registry.addInterceptor(jwtInterceptor)
+                .addPathPatterns("/web/user/**");
     }
 }
