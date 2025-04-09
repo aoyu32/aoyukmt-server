@@ -1,5 +1,6 @@
 package com.aoyukmt.model.vo.resp;
 
+import com.aoyukmt.model.dto.UserInfoDTO;
 import com.google.gson.JsonObject;
 import lombok.Data;
 
@@ -15,14 +16,14 @@ import java.time.LocalDateTime;
 @Data
 public class UserLoginRespVO {
 
-    private Long uid;
-    private String nickname;
-    private String avatar;
-    private Integer gender;
-    private String bio;
-    private Integer activeStatus;
-    private LocalDateTime registrationTime;
-    private String ipInfo;
+    /**
+     * 用户信息
+     */
+    private UserInfoDTO userData;
+
+    /**
+     *认证token
+     */
     private String token;
 
 }

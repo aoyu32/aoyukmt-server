@@ -1,5 +1,6 @@
 package com.aoyukmt.model.vo.req;
 
+import com.aoyukmt.common.interfaces.CaptchaVerifiable;
 import lombok.Data;
 
 /**
@@ -10,7 +11,7 @@ import lombok.Data;
  */
 
 @Data
-public class UserRegisterReqVO {
+public class UserRegisterReqVO implements CaptchaVerifiable {
 
     /**
      * 滑块验证二次校验码
@@ -28,4 +29,8 @@ public class UserRegisterReqVO {
     private String password;
 
 
+    @Override
+    public String getCaptchaCode() {
+        return this.verifyCode;
+    }
 }

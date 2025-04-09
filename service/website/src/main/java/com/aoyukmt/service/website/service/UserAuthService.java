@@ -1,5 +1,6 @@
 package com.aoyukmt.service.website.service;
 
+import com.aoyukmt.model.dto.UserLoginDTO;
 import com.aoyukmt.model.vo.req.UserLoginReqVO;
 import com.aoyukmt.model.vo.req.UserRegisterReqVO;
 import com.aoyukmt.model.vo.resp.UserLoginRespVO;
@@ -18,12 +19,13 @@ public interface UserAuthService {
      * 用户注册
      * @param userRegisterReqVO 用户注册参数
      */
-    String register(UserRegisterReqVO userRegisterReqVO, HttpServletRequest request);
+    String register(UserRegisterReqVO userRegisterReqVO , HttpServletRequest request);
 
     /**
      * 用户登录
      * @param userLoginReqVO 用户登录参数
+     * @return UserLoginDTO
      */
-    void login(UserLoginReqVO userLoginReqVO);
+    UserLoginRespVO login(UserLoginReqVO userLoginReqVO);
 
 }

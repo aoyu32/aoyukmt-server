@@ -42,7 +42,6 @@ public class CaptchaController {
     @PostMapping("/check")
     @Operation(summary = "校验滑块验证码",description = "校验滑块验证码的有效性")
     public Result<ResponseModel> check(@RequestBody CaptchaVO data, HttpServletRequest request) {
-        log.info("check{}",data.getToken());
         data.setBrowserInfo(getRemoteId(request));
         return Result.success(captchaService.check(data));
     }

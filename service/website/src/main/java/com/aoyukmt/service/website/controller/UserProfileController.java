@@ -4,6 +4,7 @@ import com.aoyukmt.common.result.Result;
 import com.aoyukmt.common.utils.ThreadLocalUtils;
 import com.aoyukmt.model.dto.UserInfoDTO;
 import com.aoyukmt.service.website.service.UserProfileService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ public class UserProfileController {
      * 获取用户信息
      * @return 用户信息
      */
+    @Operation(summary = "获取用户信息",description = "用户登录成功后获取用户的基本信息")
     @PostMapping("/info")
     public Result<?> getUserInfo(){
         //获取uid

@@ -1,6 +1,7 @@
 package com.aoyukmt.service.website.controller;
 
 import com.aoyukmt.common.result.Result;
+import com.aoyukmt.model.vo.req.UserLoginReqVO;
 import com.aoyukmt.model.vo.req.UserRegisterReqVO;
 import com.aoyukmt.model.vo.resp.UserLoginRespVO;
 import com.aoyukmt.service.website.service.UserAuthService;
@@ -33,16 +34,20 @@ public class UserAuthController {
 
     @Operation(summary = "用户注册", description = "用户注册接口")
     @PostMapping("/register")
-    public Result<?> register(@RequestBody UserRegisterReqVO userRegisterReqVO, HttpServletRequest request) {
+    public Result<String> register(@RequestBody UserRegisterReqVO userRegisterReqVO, HttpServletRequest request) {
         log.info("用户注册信息：{}", userRegisterReqVO);
         String userAuthToken = userAuthService.register(userRegisterReqVO, request);
         return Result.success(userAuthToken);
     }
 
+    @Operation(summary = "用户登录",description = "用户登录，可以使用用户名或邮箱进行登录")
     @PostMapping("/login")
-    public Result<?> login(){
+    public Result<UserLoginRespVO> login(@RequestBody UserLoginReqVO userLoginReqVO){
 
-        return Result.success();
+        log.info("用户名/邮箱为{}请求登录", userLoginReqVO.getAccount());
+        UserLoginRespVO userInfo = userAuthService.login(userLoginReqVO);
+        log.info("登录用户的信息：{}",userInfo.toString());
+        return Result.success(userInfo);
     }
 
 }

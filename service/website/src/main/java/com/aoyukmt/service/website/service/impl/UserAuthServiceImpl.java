@@ -1,19 +1,18 @@
 package com.aoyukmt.service.website.service.impl;
 
-import com.anji.captcha.model.common.ResponseModel;
-import com.anji.captcha.model.vo.CaptchaVO;
-import com.anji.captcha.service.CaptchaService;
 import com.aoyukmt.common.avatar.DiceBearAvatarGenerator;
 import com.aoyukmt.common.enumeration.ResultCode;
 import com.aoyukmt.common.exception.BusinessException;
 import com.aoyukmt.common.utils.JwtUtils;
 import com.aoyukmt.common.utils.PasswordUtils;
 import com.aoyukmt.common.utils.UserInfoUtils;
+import com.aoyukmt.model.dto.UserLoginDTO;
 import com.aoyukmt.model.vo.req.UserLoginReqVO;
 import com.aoyukmt.model.vo.req.UserRegisterReqVO;
 import com.aoyukmt.model.dto.UserAuthRegisterDTO;
 import com.aoyukmt.model.dto.UserProfileRegisterDTO;
 import com.aoyukmt.model.vo.resp.UserLoginRespVO;
+import com.aoyukmt.service.website.annotation.UserAuth;
 import com.aoyukmt.service.website.mapper.UserAuthMapper;
 import com.aoyukmt.service.website.mapper.UserProfileMapper;
 import com.aoyukmt.service.website.service.UserAuthService;
@@ -40,9 +39,6 @@ import java.util.Map;
 public class UserAuthServiceImpl implements UserAuthService {
 
     @Autowired
-    private CaptchaService captchaService;
-
-    @Autowired
     private UserAuthMapper userAuthMapper;
 
     @Autowired
@@ -57,19 +53,13 @@ public class UserAuthServiceImpl implements UserAuthService {
      */
     @Transactional
     @Override
+    @UserAuth
     public String register(UserRegisterReqVO userRegisterReqVO, HttpServletRequest request) {
-        //进行滑块验证二次验证
-        CaptchaVO captchaVO = new CaptchaVO();
-        captchaVO.setCaptchaVerification(userRegisterReqVO.getVerifyCode());
-        ResponseModel verification = captchaService.verification(captchaVO);
-        log.info("二次验证结果：{}",verification);
-        if(!verification.getRepCode().equals("0000")){
-            throw new BusinessException(ResultCode.VERIFY_CODE_ERROR);
-        }
 
         //判断用户名是否存在
-        String existUser = userAuthMapper.getUserByUsername(userRegisterReqVO.getUsername());
-        if(existUser != null){
+        Boolean existUser = userAuthMapper.existUsername(userRegisterReqVO.getUsername());
+        log.info("用户是否存在：{}",existUser);
+        if(existUser){
             throw new BusinessException(ResultCode.USER_ALREADY_EXIST);
         }
 
@@ -114,17 +104,6 @@ public class UserAuthServiceImpl implements UserAuthService {
         String token = jwtUtils.generateToken(Long.toString(userAuth.getUid()), claims);
 
         log.info("生成的登录token:{}",token);
-
-//        //封装返回登录后的用户信息
-//        UserLoginRespVO user = new UserLoginRespVO();
-//        user.setNickname(userProfile.getNickname());
-//        user.setAvatar(userProfile.getAvatar());
-//        user.setBio("该用户很懒，没有任何简介");
-//        user.setUid(userAuth.getUid());
-//        user.setGender(0);
-//        user.setIpInfo(userProfile.getIpInfo());
-//        user.setActiveStatus(1);
-//        user.setToken(token);
         return token;
     }
 
@@ -133,7 +112,30 @@ public class UserAuthServiceImpl implements UserAuthService {
      * @param userLoginReqVO 用户登录参数
      */
     @Override
-    public void login(UserLoginReqVO userLoginReqVO) {
+    @UserAuth
+    public UserLoginRespVO login(UserLoginReqVO userLoginReqVO) {
 
+        //查询用户信息
+        UserLoginDTO userLoginDTO = userAuthMapper.selectUser(userLoginReqVO.getAccount());
+        if(userLoginDTO==null){
+            throw new BusinessException(ResultCode.USER_NOT_EXIST);
+        }
+
+        //判断密码
+        if(!PasswordUtils.match(userLoginReqVO.getPassword(),userLoginDTO.getPassword())){
+            throw new BusinessException(ResultCode.ACCOUNT_OR_PASSWORD_ERROR);
+        }
+
+        //生成token
+        Map<String,Object> claims = new HashMap<>();
+        claims.put("username",userLoginDTO.getUserInfoDTO().getUsername());
+        String token = jwtUtils.generateToken(String.valueOf(userLoginDTO.getUserInfoDTO().getUid()), claims);
+
+        //返回用户信息
+        UserLoginRespVO userLoginRespVO = new UserLoginRespVO();
+        userLoginRespVO.setUserData(userLoginDTO.getUserInfoDTO());
+        userLoginRespVO.setToken(token);
+
+        return userLoginRespVO;
     }
 }

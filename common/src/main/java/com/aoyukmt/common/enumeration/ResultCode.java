@@ -42,14 +42,24 @@ public enum ResultCode {
     USER_ALREADY_EXIST(438,"用户已存在"),
 
     /**
+     * 用户登录
+     */
+    USER_NOT_EXIST(439,"用户不存在"),
+
+    /**
+     * 账号或密码错误
+     */
+    ACCOUNT_OR_PASSWORD_ERROR(440,"账号或密码错误"),
+
+    /**
      * token过期
      */
-    TOKEN_EXPIRED(439,"token过期"),
+    TOKEN_EXPIRED(441,"token过期"),
 
     /**
      * 无效的token
      */
-    TOKEN_VALIDATE_FAIL(440,"无效的token");
+    TOKEN_VALIDATE_FAIL(442,"无效的token");
 
 
 

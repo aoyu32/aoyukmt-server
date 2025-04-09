@@ -18,4 +18,6 @@ public interface UserProfileService {
      */
     UserInfoDTO getUserInfo(Long uid);
 
+
+
 }

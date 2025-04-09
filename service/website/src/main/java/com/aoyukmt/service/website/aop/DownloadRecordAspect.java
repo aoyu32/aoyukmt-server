@@ -10,6 +10,7 @@ import com.aoyukmt.model.vo.req.HistoryAppVO;
 import com.aoyukmt.model.vo.req.LatestAppVO;
 import com.aoyukmt.service.website.service.DownloadService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -40,9 +41,9 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 @Aspect
+@Slf4j
 public class DownloadRecordAspect {
 
-    private static final Logger log = LoggerFactory.getLogger(DownloadRecordAspect.class);
 
     @Autowired
     private DownloadService downloadService;

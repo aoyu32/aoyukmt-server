@@ -3,20 +3,21 @@
 <mapper namespace="com.aoyukmt.service.website.mapper.UserProfileMapper">
 
     <select id="selectUserInfoByUid" resultMap="userInfo">
-        select
-            ua.uid as user_uid,
-            up.nickname as user_nickname,
-            up.avatar as user_avatar,
-            up.gender as user_gender,
-            up.bio as user_bio,
-            up.active_status as user_active_status,
-            up.ip_info as user_ip_info,
-            ua.username as user_username,
-            ua.email as user_email
+        select ua.uid               as user_uid,
+               up.nickname          as user_nickname,
+               up.avatar            as user_avatar,
+               up.gender            as user_gender,
+               up.bio               as user_bio,
+               up.active_status     as user_active_status,
+               up.ip_info           as user_ip_info,
+               ua.username          as user_username,
+               up.registration_time as user_registration_time,
+               ua.email             as user_email
         from user_profile as up
-        join user_auth as ua
-        on up.id = ua.uid
-        where up.id = #{uid} and up.status = 1
+                 join user_auth as ua
+                      on up.id = ua.uid
+        where up.id = #{uid}
+          and ua.status = 1
     </select>
 
     <resultMap id="userInfo" type="com.aoyukmt.model.dto.UserInfoDTO">
@@ -28,6 +29,7 @@
         <result property="activeStatus" column="user_active_status"/>
         <result property="ipInfo" column="user_ip_info"/>
         <result property="username" column="user_username"/>
+        <result property="registrationTime" column="user_registration_time"/>
         <result property="email" column="use_email"/>
     </resultMap>
 
