@@ -7,7 +7,6 @@ CREATE TABLE `user_profile` (
   `active_status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '在线状态: 1-在线, 2-离线',
   `registration_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
   `ip_info` json DEFAULT NULL COMMENT 'IP地理位置等信息',
-  `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '账户状态: 1-正常, 2-非活跃, 3-封禁',
   `delete_status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除: 0-正常, 1-已删除',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -17,6 +16,7 @@ CREATE TABLE `user_profile` (
   KEY `idx_create_time` (`create_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户基本信息表' AUTO_INCREMENT = 10000;
 
+ALTER TABLE `user_profile` DROP COLUMN `status`;
 
 -- 用户认证信息表
 CREATE TABLE `user_auth` (
@@ -27,7 +27,7 @@ CREATE TABLE `user_auth` (
   `password` VARCHAR(255) NOT NULL COMMENT '用户登录密码',
   `last_login_ip` varchar(64) DEFAULT NULL COMMENT '上次登录IP',
   `last_login_time` timestamp NULL DEFAULT NULL COMMENT '上次登录时间',
-  `login_failed_count` int DEFAULT 0 COMMENT '连续登录失败次数',
+  `status` tinyint NOT NULL DEFAULT 1 COMMENT '账户状态:1-正常,2-锁定,3-禁用',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),

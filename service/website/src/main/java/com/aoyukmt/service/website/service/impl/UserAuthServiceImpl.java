@@ -103,6 +103,7 @@ public class UserAuthServiceImpl implements UserAuthService {
         claims.put("username",userAuth.getUsername());
         String token = jwtUtils.generateToken(Long.toString(userAuth.getUid()), claims);
 
+
         log.info("生成的登录token:{}",token);
         return token;
     }

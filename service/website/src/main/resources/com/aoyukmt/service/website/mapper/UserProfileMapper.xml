@@ -30,7 +30,7 @@
         <result property="ipInfo" column="user_ip_info"/>
         <result property="username" column="user_username"/>
         <result property="registrationTime" column="user_registration_time"/>
-        <result property="email" column="use_email"/>
+        <result property="email" column="user_email"/>
     </resultMap>
 
 </mapper>
