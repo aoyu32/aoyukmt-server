@@ -28,7 +28,8 @@ public class DiceBearAvatarGenerator {
                 new LoreleiStyle(),
                 new PixelArtStyle(),
                 new AdventurerStyle(),
-                new BotttsStyle()
+                new BotttsStyle(),
+                new NeutralStyle()
         );
 
         // 随机选择一个风格

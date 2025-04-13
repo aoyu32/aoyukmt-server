@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * 头像风格的抽象基类
  */
 public abstract class AvatarStyle {
-    protected static final String BASE_URL = "https://api.dicebear.com/7.x/";
+    protected static final String BASE_URL = "https://api.dicebear.com/9.x/";
     protected static final Random random = new Random();
 
     // 固定的尺寸、形状和圆角参数

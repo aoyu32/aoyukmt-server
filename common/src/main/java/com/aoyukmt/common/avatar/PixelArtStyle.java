@@ -50,7 +50,7 @@ public class PixelArtStyle extends AvatarStyle {
         Map<String, String> styleParams = new HashMap<>();
         if (beard != null) styleParams.put("beard", beard);
         if (glasses != null) styleParams.put("glasses", glasses);
-        if (hair != null) styleParams.put("hairProbability", hair);
+        if (hair != null) styleParams.put("hair", hair);
         if (mouth != null) styleParams.put("mouth", mouth);
         if (skinColor != null) styleParams.put("skinColor", skinColor);
 

@@ -119,7 +119,7 @@ public class UserAuthServiceImpl implements UserAuthService {
         //查询用户信息
         UserLoginDTO userLoginDTO = userAuthMapper.selectUser(userLoginReqVO.getAccount());
         if(userLoginDTO==null){
-            throw new BusinessException(ResultCode.USER_NOT_EXIST);
+            throw new BusinessException(ResultCode.ACCOUNT_OR_PASSWORD_ERROR);
         }
 
         //判断密码
