@@ -46,29 +46,6 @@ public class GlobalExceptionHandler {
         return Result.error(e.getCode(), e.getMessage());
     }
 
-
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public Result<Map<String,String>> handleValidationException(MethodArgumentNotValidException e) {
-//        log.info("数据校验异常：{}",e.getMessage());
-//        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
-//        Map<String, String> errorMap = new HashMap<>();
-//        fieldErrors.forEach(error -> errorMap.put(error.getField(), error.getDefaultMessage()));
-//        return Result.error(ResultCode.PARAM_ERROR,errorMap);
-//    }
-//
-//    @ExceptionHandler(ConstraintViolationException.class)
-//    public Result<Map<String, String>> handleConstraintViolationException(ConstraintViolationException e) {
-//        log.info("参数校验异常：{}", e.getMessage());
-//        Map<String, String> errorMap = new HashMap<>();
-//        for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
-//            String field = violation.getPropertyPath().toString(); // 获取字段路径
-//            String message = violation.getMessage();
-//            errorMap.put(field, message);
-//        }
-//        return Result.error(ResultCode.PARAM_ERROR, errorMap);
-//    }
-
-
     /**
      * 处理数据校验异常
      * @param e 异常

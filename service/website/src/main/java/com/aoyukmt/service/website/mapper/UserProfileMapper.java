@@ -2,6 +2,7 @@ package com.aoyukmt.service.website.mapper;
 
 import com.aoyukmt.model.dto.UserInfoDTO;
 import com.aoyukmt.model.dto.UserProfileRegisterDTO;
+import com.aoyukmt.model.dto.UserUpdateDTO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
@@ -25,5 +26,12 @@ public interface UserProfileMapper {
     void insert(UserProfileRegisterDTO userProfileRegisterDTO);
     UserInfoDTO selectUserInfoByUid(Long uid);
 
+
+    /**
+     * 更新某个uid的某个字段
+     * @param userUpdateDTO 用户要更新的参数
+     * @return 更新影响的行数
+     */
+    Integer updateUserById(UserUpdateDTO userUpdateDTO);
 
 }

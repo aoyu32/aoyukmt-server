@@ -1,7 +1,7 @@
 package com.aoyukmt.service.website.service;
 
 import com.aoyukmt.model.dto.UserInfoDTO;
-import com.aoyukmt.model.vo.resp.UserLoginRespVO;
+import com.aoyukmt.model.dto.UserUpdateDTO;
 
 /**
  * @InterfaceName：UserProfileService
@@ -18,6 +18,13 @@ public interface UserProfileService {
      */
     UserInfoDTO getUserInfo(Long uid);
 
+
+    /**
+     * 更新用户信息
+     * @param userUpdateDTO 用户需要更新的参数
+     * @return 更新结果
+     */
+    Integer userUpdate(UserUpdateDTO userUpdateDTO);
 
 
 }
