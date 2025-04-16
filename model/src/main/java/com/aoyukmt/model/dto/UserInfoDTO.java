@@ -55,10 +55,21 @@ public class UserInfoDTO {
     private Integer activeStatus;
 
     /**
-     * 注册事件
+     * 上一次登录时间
      */
-    @JsonFormat(pattern = "yyyy年MM月dd日 HH:mm:SS")
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    private LocalDateTime lastLoginTime;
+
+    /**
+     * 注册时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private LocalDateTime registrationTime;
+
+    /**
+     * 上一次登录ip
+     */
+    private String lastLoginIp;
 
     /**
      * ip信息

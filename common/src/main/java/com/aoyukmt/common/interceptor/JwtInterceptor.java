@@ -33,7 +33,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         log.info("获取请求头中的token:{}", token);
         //如果获取不到token信息
         if (token == null) {
-            return false;
+            throw new BusinessException(ResultCode.UN_LOGIN);
         }
 
         //取出token部分

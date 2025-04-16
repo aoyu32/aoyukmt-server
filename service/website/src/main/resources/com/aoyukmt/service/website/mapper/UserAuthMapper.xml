@@ -2,25 +2,27 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.aoyukmt.service.website.mapper.UserAuthMapper">
 
-<!--    查询用户登录信息-->
+    <!--    查询用户登录信息-->
     <select id="selectUser" resultMap="userLogin">
-        select ua.password      as user_password,
-               ua.uid           as user_uid,
-               up.nickname      as user_nickname,
-               up.avatar        as user_avatar,
-               up.gender        as user_gender,
-               up.bio           as user_bio,
-               up.active_status as user_active_status,
-               up.ip_info       as user_ip_info,
-               ua.username      as user_username,
+        select ua.password          as user_password,
+               ua.uid               as user_uid,
+               up.nickname          as user_nickname,
+               up.avatar            as user_avatar,
+               up.gender            as user_gender,
+               up.bio               as user_bio,
+               up.active_status     as user_active_status,
+               up.ip_info           as user_ip_info,
+               ua.username          as user_username,
                up.registration_time as user_registration_time,
-               ua.email         as user_email
+               ua.email             as user_email,
+               ua.last_login_time   as user_last_login_time,
+               ua.last_login_ip     as user_last_login_ip
         from user_profile as up
                  join user_auth as ua
                       on up.id = ua.uid
-        where ua.username = #{account}
-           or ua.email = #{account}
-            and ua.status = 1
+        where (ua.username = #{account}
+            or ua.email = #{account})
+          and ua.delete_status = 1
 
     </select>
 
@@ -37,6 +39,8 @@
             <result property="registrationTime" column="user_registration_time"/>
             <result property="username" column="user_username"/>
             <result property="email" column="user_email"/>
+            <result property="lastLoginTime" column="user_last_login_time"/>
+            <result property="lastLoginIp" column="user_last_login_ip"/>
         </collection>
     </resultMap>
 

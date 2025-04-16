@@ -8,6 +8,7 @@ import com.aoyukmt.service.website.service.UserProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Options;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,9 +48,10 @@ public class UserProfileController {
      * @description: 更新用户信息
      * @author: aoyu
      * @date: 2025/4/15 下午4:15
-     * @param:
+     * @param: 用户需要更新的信息参数
      * @return:
      */
+    @Operation(summary = "更新用户信息",description = "更新用户的基本信息")
     @PostMapping("/update")
     public Result<?> update(@RequestBody UserUpdateDTO userUpdateDTO){
         Long uid = Long.valueOf(ThreadLocalUtils.get("uid").toString());
@@ -58,6 +60,8 @@ public class UserProfileController {
         userProfileService.userUpdate(userUpdateDTO);
         return Result.success();
     }
+
+
 
 
 

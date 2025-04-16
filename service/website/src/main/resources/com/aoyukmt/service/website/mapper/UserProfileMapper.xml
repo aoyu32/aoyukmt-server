@@ -13,12 +13,16 @@
                up.ip_info           as user_ip_info,
                ua.username          as user_username,
                up.registration_time as user_registration_time,
-               ua.email             as user_email
+               ua.email             as user_email,
+               ua.last_login_time   as user_last_login_time,
+               ua.last_login_ip     as user_last_login_ip
+
+
         from user_profile as up
                  join user_auth as ua
                       on up.id = ua.uid
         where up.id = #{uid}
-          and ua.status = 1
+          and ua.delete_status = 1
     </select>
 
     <resultMap id="userInfo" type="com.aoyukmt.model.dto.UserInfoDTO">
@@ -32,6 +36,8 @@
         <result property="username" column="user_username"/>
         <result property="registrationTime" column="user_registration_time"/>
         <result property="email" column="user_email"/>
+        <result property="lastLoginTime" column="user_last_login_time"/>
+        <result property="lastLoginIp" column="user_last_login_ip"/>
     </resultMap>
 
     <!--更新用户信息-->

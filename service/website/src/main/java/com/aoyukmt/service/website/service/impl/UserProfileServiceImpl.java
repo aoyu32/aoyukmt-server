@@ -7,6 +7,7 @@ import com.aoyukmt.model.dto.UserUpdateDTO;
 import com.aoyukmt.service.website.mapper.UserProfileMapper;
 import com.aoyukmt.service.website.service.UserProfileService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Options;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,7 @@
 package com.aoyukmt.service.website.controller;
 
 import com.aoyukmt.common.result.Result;
+import com.aoyukmt.common.utils.ThreadLocalUtils;
 import com.aoyukmt.model.vo.req.UserLoginReqVO;
 import com.aoyukmt.model.vo.req.UserRegisterReqVO;
 import com.aoyukmt.model.vo.resp.UserLoginRespVO;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 /**
  * @ClassName：UserAuthController
@@ -40,14 +43,24 @@ public class UserAuthController {
         return Result.success(userAuthToken);
     }
 
-    @Operation(summary = "用户登录",description = "用户登录，可以使用用户名或邮箱进行登录")
+    @Operation(summary = "用户登录", description = "用户登录，可以使用用户名或邮箱进行登录")
     @PostMapping("/login")
-    public Result<UserLoginRespVO> login(@RequestBody UserLoginReqVO userLoginReqVO){
+    public Result<UserLoginRespVO> login(@RequestBody UserLoginReqVO userLoginReqVO) {
 
         log.info("用户名/邮箱为{}请求登录", userLoginReqVO.getAccount());
         UserLoginRespVO userInfo = userAuthService.login(userLoginReqVO);
-        log.info("登录用户的信息：{}",userInfo.toString());
+        log.info("登录用户的信息：{}", userInfo.toString());
         return Result.success(userInfo);
     }
 
+    @Operation(summary = "注销用户",description = "注销用户接口")
+    @PostMapping("/logoff")
+    public Result<?> logoff(@RequestBody Map<String,String> param){
+        Long uid = Long.valueOf(ThreadLocalUtils.get("uid").toString());
+        log.info("用户uid为：{}请求注销用户，身份验证密码：{}",uid,param.get("password"));
+        userAuthService.logoff(uid,param.get("password"));
+        log.info("注销操作完成");
+        return Result.success();
+
+    }
 }

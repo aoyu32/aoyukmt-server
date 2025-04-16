@@ -1,16 +1,19 @@
 package com.aoyukmt.service.website.service.impl;
 
 import com.aoyukmt.common.avatar.DiceBearAvatarGenerator;
+import com.aoyukmt.common.constant.StatusConstant;
+import com.aoyukmt.common.constant.UserConstant;
 import com.aoyukmt.common.enumeration.ResultCode;
 import com.aoyukmt.common.exception.BusinessException;
+import com.aoyukmt.common.utils.IpUtils;
 import com.aoyukmt.common.utils.JwtUtils;
 import com.aoyukmt.common.utils.PasswordUtils;
 import com.aoyukmt.common.utils.UserInfoUtils;
+import com.aoyukmt.model.dto.UserAuthRegisterDTO;
 import com.aoyukmt.model.dto.UserLoginDTO;
+import com.aoyukmt.model.dto.UserProfileRegisterDTO;
 import com.aoyukmt.model.vo.req.UserLoginReqVO;
 import com.aoyukmt.model.vo.req.UserRegisterReqVO;
-import com.aoyukmt.model.dto.UserAuthRegisterDTO;
-import com.aoyukmt.model.dto.UserProfileRegisterDTO;
 import com.aoyukmt.model.vo.resp.UserLoginRespVO;
 import com.aoyukmt.service.website.annotation.UserAuth;
 import com.aoyukmt.service.website.mapper.UserAuthMapper;
@@ -24,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,8 +51,10 @@ public class UserAuthServiceImpl implements UserAuthService {
     @Autowired
     private JwtUtils jwtUtils;
 
+
     /**
      * 用户注册
+     *
      * @param userRegisterReqVO 用户注册数据
      */
     @Transactional
@@ -58,8 +64,8 @@ public class UserAuthServiceImpl implements UserAuthService {
 
         //判断用户名是否存在
         Boolean existUser = userAuthMapper.existUsername(userRegisterReqVO.getUsername());
-        log.info("用户是否存在：{}",existUser);
-        if(existUser){
+        log.info("用户是否存在：{}", existUser);
+        if (existUser) {
             throw new BusinessException(ResultCode.USER_ALREADY_EXIST);
         }
 
@@ -77,13 +83,15 @@ public class UserAuthServiceImpl implements UserAuthService {
         userProfile.setAvatar(randomAvatarUrl);
 
         //获取用户ip信息
-        String userIp = UserInfoUtils.getClientIp(request);
-        log.info("用户ip:{}",userIp);
+//        String userIp = UserInfoUtils.getClientIp(request);
+        String userIp = IpUtils.getIpAddr(request);
+
+        log.info("用户ip:{}", userIp);
         JsonObject userIpJson = new JsonObject();
-        userIpJson.addProperty("ip",userIp);
+        userIpJson.addProperty("ip", userIp);
         Gson gson = new Gson();
         String userIpInfo = gson.toJson(userIpJson);
-        log.info("用户ip json:{}",userIpInfo);
+        log.info("用户ip json:{}", userIpInfo);
         userProfile.setIpInfo(userIpInfo);
 
 
@@ -93,23 +101,27 @@ public class UserAuthServiceImpl implements UserAuthService {
         UserAuthRegisterDTO userAuth = new UserAuthRegisterDTO();
         userAuth.setUsername(userRegisterReqVO.getUsername());
         userAuth.setPassword(encrypt);
-        log.info("注册的用户id:{}",userProfile.getId());
+        userAuth.setLastLoginTime(LocalDateTime.now());
+        userAuth.setLastLoginIp(userIp);
+
+        log.info("注册的用户id:{}", userProfile.getId());
         userAuth.setUid(userProfile.getId());
         //插入用户认证信息
         userAuthMapper.insert(userAuth);
 
         //生成token，返回用户信息
-        Map<String,Object> claims = new HashMap<>();
-        claims.put("username",userAuth.getUsername());
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("username", userAuth.getUsername());
         String token = jwtUtils.generateToken(Long.toString(userAuth.getUid()), claims);
 
 
-        log.info("生成的登录token:{}",token);
+        log.info("生成的登录token:{}", token);
         return token;
     }
 
     /**
      * 用户登录
+     *
      * @param userLoginReqVO 用户登录参数
      */
     @Override
@@ -118,18 +130,19 @@ public class UserAuthServiceImpl implements UserAuthService {
 
         //查询用户信息
         UserLoginDTO userLoginDTO = userAuthMapper.selectUser(userLoginReqVO.getAccount());
-        if(userLoginDTO==null){
+
+        if (userLoginDTO == null) {
             throw new BusinessException(ResultCode.ACCOUNT_OR_PASSWORD_ERROR);
         }
 
         //判断密码
-        if(!PasswordUtils.match(userLoginReqVO.getPassword(),userLoginDTO.getPassword())){
+        if (!PasswordUtils.match(userLoginReqVO.getPassword(), userLoginDTO.getPassword())) {
             throw new BusinessException(ResultCode.ACCOUNT_OR_PASSWORD_ERROR);
         }
 
         //生成token
-        Map<String,Object> claims = new HashMap<>();
-        claims.put("username",userLoginDTO.getUserInfoDTO().getUsername());
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("username", userLoginDTO.getUserInfoDTO().getUsername());
         String token = jwtUtils.generateToken(String.valueOf(userLoginDTO.getUserInfoDTO().getUid()), claims);
 
         //返回用户信息
@@ -137,6 +150,43 @@ public class UserAuthServiceImpl implements UserAuthService {
         userLoginRespVO.setUserData(userLoginDTO.getUserInfoDTO());
         userLoginRespVO.setToken(token);
 
+        //更新登录时间
+        userAuthMapper.updateLastLoginTime(userLoginDTO.getUserInfoDTO().getUid(),LocalDateTime.now());
+
         return userLoginRespVO;
     }
+
+    /**
+     * 注销用户
+     *
+     * @param uid      用户id
+     * @param password 验证身份的密码
+     */
+    @Override
+    public void logoff(Long uid, String password) {
+        log.info("开始注销uid为：{}的用户", uid);
+        //验证密码
+        String pwd = userAuthMapper.selectPasswordByUid(uid);
+        log.info("查询到的密码：{}", pwd);
+        log.info("密码检验结果：{}", PasswordUtils.match(password, pwd));
+        if (!PasswordUtils.match(password, pwd)) {
+            log.info("用户密码错误，终止注销操作");
+            throw new BusinessException(ResultCode.PASSWORD_ERROR);
+        }
+        log.info("用户密码正确，开始执行注销操作");
+        //获取该用户的用户名
+        String username = userAuthMapper.selectUsernameByUid(uid);
+        //给注销用户的用户名添加注销标识
+        //生成一个时间戳
+        long timestamp = System.currentTimeMillis();
+        String logoffUsername = username + UserConstant.USER_DELETE + timestamp;
+        //注销用户
+        Integer res = userAuthMapper.updateUserStatus(uid, StatusConstant.DISABLE, logoffUsername);
+
+        if (res <= 0) {
+            throw new BusinessException(ResultCode.ERROR);
+        }
+        log.info("成功注销uid为{}的用户", uid);
+    }
+
 }

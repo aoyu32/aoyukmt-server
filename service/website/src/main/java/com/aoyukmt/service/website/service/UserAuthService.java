@@ -15,6 +15,14 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public interface UserAuthService {
 
+
+    /**
+     * 注销用户
+     * @param uid 用户id
+     * @param password 验证身份的密码
+     */
+     void logoff(Long uid, String password);
+
     /**
      * 用户注册
      * @param userRegisterReqVO 用户注册参数

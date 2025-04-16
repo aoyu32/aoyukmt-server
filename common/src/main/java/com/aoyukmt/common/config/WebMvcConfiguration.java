@@ -42,6 +42,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 .addPathPatterns("/web/download/**");
 
         registry.addInterceptor(jwtInterceptor)
-                .addPathPatterns("/web/user/**");
+                .addPathPatterns("/web/user/**")
+                .addPathPatterns("/web/auth/logoff");
+
     }
 }

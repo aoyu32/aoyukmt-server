@@ -28,5 +28,14 @@ public class UserAuthRegisterDTO {
      */
     private String password;
 
+    /**
+     * 登录时间
+     */
+    private LocalDateTime lastLoginTime;
+
+    /**
+     * 登录ip
+     */
+    private String lastLoginIp;
 
 }
