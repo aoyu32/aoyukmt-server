@@ -11,6 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Options;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 /**
  * @ClassName：UserProfileController
@@ -62,6 +65,14 @@ public class UserProfileController {
     }
 
 
+    @Operation(summary = "修改用户头像",description = "修改用户的头像，可以随机生成头像，可以上传头像")
+    @PostMapping("/avatar")
+    public Result<String> avatar(@RequestParam("action") String action, MultipartFile file) throws IOException {
+        log.info("上传的文件是本地文件还是随机图片{}",action);
+        log.info("用户上次的图片数据：{}",file);
+        String avatar = userProfileService.avatar(action,file);
+        return Result.success(avatar);
+    }
 
 
 

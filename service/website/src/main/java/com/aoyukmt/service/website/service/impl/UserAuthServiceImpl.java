@@ -12,6 +12,7 @@ import com.aoyukmt.common.utils.UserInfoUtils;
 import com.aoyukmt.model.dto.UserAuthRegisterDTO;
 import com.aoyukmt.model.dto.UserLoginDTO;
 import com.aoyukmt.model.dto.UserProfileRegisterDTO;
+import com.aoyukmt.model.dto.UserResetDTO;
 import com.aoyukmt.model.vo.req.UserLoginReqVO;
 import com.aoyukmt.model.vo.req.UserRegisterReqVO;
 import com.aoyukmt.model.vo.resp.UserLoginRespVO;
@@ -156,6 +157,7 @@ public class UserAuthServiceImpl implements UserAuthService {
         return userLoginRespVO;
     }
 
+
     /**
      * 注销用户
      *
@@ -187,6 +189,33 @@ public class UserAuthServiceImpl implements UserAuthService {
             throw new BusinessException(ResultCode.ERROR);
         }
         log.info("成功注销uid为{}的用户", uid);
+    }
+
+    /**
+     * 重置密码
+     * @param userResetDTO 用户提交的原密码和新密码
+     * @return
+     */
+    @Override
+    public void reset(Long uid,UserResetDTO userResetDTO) {
+        log.info("将uid为：{}的用户的原密码：{}更新为新密码：{}",uid,userResetDTO.getOriginalPassword(),userResetDTO.getNewPassword());
+
+        //判断原密码是否正确
+        String password = userAuthMapper.selectPasswordByUid(uid);
+        log.info("密码验证结果：{}",PasswordUtils.match(userResetDTO.getOriginalPassword(),password));
+        if(!PasswordUtils.match(userResetDTO.getOriginalPassword(),password)){
+            throw new BusinessException(ResultCode.PASSWORD_ERROR);
+        }
+
+        //更新密码
+        //加密新密码
+        String newPassword = PasswordUtils.encrypt(userResetDTO.getNewPassword());
+        Integer result = userAuthMapper.updatePassword(uid,newPassword);
+        if(result <= 0){
+            throw new BusinessException(ResultCode.ERROR);
+        }
+
+        log.info("用户uid为{}的密码成功",uid);
     }
 
 }

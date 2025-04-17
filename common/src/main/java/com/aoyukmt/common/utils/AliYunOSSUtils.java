@@ -4,6 +4,7 @@ import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
+import com.aoyukmt.common.constant.UserConstant;
 import com.aoyukmt.common.enumeration.ResultCode;
 import com.aoyukmt.common.exception.BusinessException;
 import lombok.AllArgsConstructor;
@@ -50,7 +51,7 @@ public class AliYunOSSUtils {
      */
     public String uploadFile(byte[] file, String fileName){
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
-        String objectName = generateFileName(fileName);
+        String objectName = UserConstant.ALI_OSS_USER_AVATAR_DIR_PATH + generateFileName(fileName);
         try {
             ossClient.putObject(bucketName, objectName, new ByteArrayInputStream(file));
         }catch (OSSException oe) {

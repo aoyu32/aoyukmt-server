@@ -67,8 +67,12 @@ public enum ResultCode {
     /**
      * 未登录
      */
-    UN_LOGIN(443, "未登录");
+    UN_LOGIN(443, "未登录"),
 
+    /**
+     * 不支持的文件类型
+     */
+    UNSUPPORTED_FILE_TYPE(444,"不支持的文件类型");
 
     @Getter
     private final int code;

@@ -6,6 +6,7 @@ import com.aoyukmt.model.dto.UserUpdateDTO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Update;
 
 /**
  * @InterfaceName：UserProfileMapper
@@ -33,5 +34,8 @@ public interface UserProfileMapper {
      * @return 更新影响的行数
      */
     Integer updateUserById(UserUpdateDTO userUpdateDTO);
+
+    @Update("update user_profile set avatar = #{avatarUrl} where id = #{uid}")
+    Integer updateAvatarById(Long uid,String avatarUrl);
 
 }

@@ -7,7 +7,6 @@ CREATE TABLE `user_profile` (
   `active_status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '在线状态: 1-在线, 2-离线',
   `registration_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
   `ip_info` json DEFAULT NULL COMMENT 'IP地理位置等信息',
-  
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),

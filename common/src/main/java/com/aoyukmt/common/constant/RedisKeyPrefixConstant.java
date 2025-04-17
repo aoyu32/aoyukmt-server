@@ -15,4 +15,7 @@ public class RedisKeyPrefixConstant {
     //唯一下载id的key前缀
     public static  final String DOWNLOAD_ID = "download_id:";
 
+    //用户生成的随机头像key前缀
+    public static  final String USER_RANDOM_AVATAR = "user_random_avatar:";
+
 }

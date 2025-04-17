@@ -2,6 +2,7 @@ package com.aoyukmt.service.website.mapper;
 
 import com.aoyukmt.model.dto.UserAuthRegisterDTO;
 import com.aoyukmt.model.dto.UserLoginDTO;
+import com.aoyukmt.model.dto.UserResetDTO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -79,4 +80,14 @@ public interface UserAuthMapper {
      */
     @Update("update user_auth set last_login_time = #{lastLoginTime} where uid = #{uid}")
     void updateLastLoginTime(Long uid, LocalDateTime lastLoginTime);
+
+    /**
+     * 更新用户密码
+     * @param uid 用户id
+     * @param newPassword 用户新密码
+     * @return 更新结果
+     */
+    @Update("update user_auth set password = #{newPassword} where uid = #{uid}")
+    Integer updatePassword(Long uid, String newPassword);
+
 }

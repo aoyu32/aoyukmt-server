@@ -2,6 +2,9 @@ package com.aoyukmt.service.website.service;
 
 import com.aoyukmt.model.dto.UserInfoDTO;
 import com.aoyukmt.model.dto.UserUpdateDTO;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 /**
  * @InterfaceName：UserProfileService
@@ -26,5 +29,12 @@ public interface UserProfileService {
      */
     Integer userUpdate(UserUpdateDTO userUpdateDTO);
 
+
+    /**
+     * 用户修改头像
+     * @param file
+     * @return 头像图片url
+     */
+    String avatar(String action,MultipartFile file) throws IOException;
 
 }

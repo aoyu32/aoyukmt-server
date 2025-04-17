@@ -4,10 +4,11 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Random;
 
+import static com.aoyukmt.common.constant.UserConstant.CHAR_POOL;
+import static com.aoyukmt.common.constant.UserConstant.RANDOM_USERNAME_PREFIX;
+
 public class UserInfoUtils {
 
-    private final static String usernamePrefix = "akm-";
-    private final static String CHAR_POOL = "abcdefghijklmnopqrstuvwxyz1234567890";
 
     /**
      * 生成随机昵称
@@ -21,7 +22,7 @@ public class UserInfoUtils {
             nickname.append(CHAR_POOL.charAt(index));
         }
 
-        return usernamePrefix + nickname;
+        return RANDOM_USERNAME_PREFIX + nickname;
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.aoyukmt.service.website.service;
 
 import com.aoyukmt.model.dto.UserLoginDTO;
+import com.aoyukmt.model.dto.UserResetDTO;
 import com.aoyukmt.model.vo.req.UserLoginReqVO;
 import com.aoyukmt.model.vo.req.UserRegisterReqVO;
 import com.aoyukmt.model.vo.resp.UserLoginRespVO;
@@ -36,4 +37,10 @@ public interface UserAuthService {
      */
     UserLoginRespVO login(UserLoginReqVO userLoginReqVO);
 
+    /**
+     * 重置密码
+     * @param userResetDTO 用户提交的原密码和新密码
+     * @return 更新结果
+     */
+    void reset(Long uid,UserResetDTO userResetDTO);
 }
