@@ -34,7 +34,6 @@ public interface UserProfileMapper {
      * @return 更新影响的行数
      */
     Integer updateUserById(UserUpdateDTO userUpdateDTO);
-
     @Update("update user_profile set avatar = #{avatarUrl} where id = #{uid}")
     Integer updateAvatarById(Long uid,String avatarUrl);
 

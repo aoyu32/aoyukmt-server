@@ -12,12 +12,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Options;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -55,34 +51,45 @@ public class UserAuthController {
         return Result.success(userInfo);
     }
 
-    @Operation(summary = "注销用户",description = "注销用户接口")
+    @Operation(summary = "注销用户", description = "注销用户接口")
     @PostMapping("/logoff")
-    public Result<?> logoff(@RequestBody Map<String,String> param){
+    public Result<?> logoff(@RequestBody Map<String, String> param) {
         Long uid = Long.valueOf(ThreadLocalUtils.get("uid").toString());
-        log.info("用户uid为：{}请求注销用户，身份验证密码：{}",uid,param.get("password"));
-        userAuthService.logoff(uid,param.get("password"));
+        log.info("用户uid为：{}请求注销用户，身份验证密码：{}", uid, param.get("password"));
+        userAuthService.logoff(uid, param.get("password"));
         log.info("注销操作完成");
         return Result.success();
-
     }
 
 
-    @Operation(summary = "重置密码",description = "重置用户的密码接口")
+    @Operation(summary = "重置密码", description = "重置用户的密码接口")
     @PostMapping("/reset")
-    public Result<?> reset(@RequestBody UserResetDTO userResetDTO){
+    public Result<?> reset(@RequestBody UserResetDTO userResetDTO) {
         Long uid = Long.valueOf(ThreadLocalUtils.get("uid").toString());
-        log.info("用户uid为：{}请求重置密码",uid);
-        userAuthService.reset(uid,userResetDTO);
-        log.info("更新用户为uid{}密码完成",uid);
+        log.info("用户uid为：{}请求重置密码", uid);
+        userAuthService.reset(uid, userResetDTO);
+        log.info("更新用户为uid{}密码完成", uid);
         return Result.success();
     }
 
-    @Operation(summary = "绑定邮箱",description = "用户绑定邮箱接口")
+    @Operation(summary = "获取邮箱验证码", description = "获取邮箱验证码服务")
+    @PostMapping("/code")
+    public Result<String> code(@RequestBody Map<String,String> param) {
+        Long uid = Long.valueOf(ThreadLocalUtils.get("uid").toString());
+        log.info("用户id为：{},请求获取邮箱验证码，邮箱为{}", uid, param.get("email"));
+        userAuthService.code(uid, param.get("email"));
+        log.info("验证码发送成功");
+        return Result.success();
+    }
+
+    @Operation(summary = "绑定邮箱", description = "用户绑定邮箱接口")
     @PostMapping("/email")
-    public Result<?> email(@RequestBody UserBindEmailDTO userBindEmailDTO){
+    public Result<?> email(@RequestBody UserBindEmailDTO userBindEmailDTO) {
+        Long uid = Long.valueOf(ThreadLocalUtils.get("uid").toString());
+        log.info("用户uid为：{}的用户请求绑定邮箱，验证码：{}，邮箱：{}",uid,userBindEmailDTO.getCode(),userBindEmailDTO.getEmail());
+        userAuthService.email(uid, userBindEmailDTO);
         return Result.success();
     }
-
 
 
 }

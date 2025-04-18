@@ -72,7 +72,27 @@ public enum ResultCode {
     /**
      * 不支持的文件类型
      */
-    UNSUPPORTED_FILE_TYPE(444,"不支持的文件类型");
+    UNSUPPORTED_FILE_TYPE(444,"不支持的文件类型"),
+
+    /**
+     * 资源过期
+     */
+    RANDOM_AVATAR_EXPIRED(445,"头像资源过期,请重新生成"),
+
+    /**
+     * 验证码失效
+     */
+    EMAIL_CODE_EXPIRED(446,"邮箱验证码已失效"),
+
+    /**
+     * 验证码错误
+     */
+    EMAIL_CODE_ERROR(447,"验证码错误"),
+
+    /**
+     * 邮箱已经被绑定
+     */
+    EMAIL_HAS_BINDING(448,"邮箱已被绑定");
 
     @Getter
     private final int code;

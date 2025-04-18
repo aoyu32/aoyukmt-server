@@ -18,4 +18,7 @@ public class RedisKeyPrefixConstant {
     //用户生成的随机头像key前缀
     public static  final String USER_RANDOM_AVATAR = "user_random_avatar:";
 
+    //邮箱验证码前缀
+    public static  final String EMAIL_CODE = "email_verify_code:";
+
 }

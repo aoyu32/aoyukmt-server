@@ -1,6 +1,8 @@
 package com.aoyukmt.service.website.service.impl;
 
+import cn.hutool.core.util.RandomUtil;
 import com.aoyukmt.common.avatar.DiceBearAvatarGenerator;
+import com.aoyukmt.common.constant.RedisKeyPrefixConstant;
 import com.aoyukmt.common.constant.StatusConstant;
 import com.aoyukmt.common.constant.UserConstant;
 import com.aoyukmt.common.enumeration.ResultCode;
@@ -9,28 +11,29 @@ import com.aoyukmt.common.utils.IpUtils;
 import com.aoyukmt.common.utils.JwtUtils;
 import com.aoyukmt.common.utils.PasswordUtils;
 import com.aoyukmt.common.utils.UserInfoUtils;
-import com.aoyukmt.model.dto.UserAuthRegisterDTO;
-import com.aoyukmt.model.dto.UserLoginDTO;
-import com.aoyukmt.model.dto.UserProfileRegisterDTO;
-import com.aoyukmt.model.dto.UserResetDTO;
+import com.aoyukmt.model.dto.*;
 import com.aoyukmt.model.vo.req.UserLoginReqVO;
 import com.aoyukmt.model.vo.req.UserRegisterReqVO;
 import com.aoyukmt.model.vo.resp.UserLoginRespVO;
 import com.aoyukmt.service.website.annotation.UserAuth;
 import com.aoyukmt.service.website.mapper.UserAuthMapper;
 import com.aoyukmt.service.website.mapper.UserProfileMapper;
+import com.aoyukmt.service.website.service.MailService;
 import com.aoyukmt.service.website.service.UserAuthService;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @ClassName：UserAuthServiceImpl
@@ -52,6 +55,11 @@ public class UserAuthServiceImpl implements UserAuthService {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 用户注册
@@ -152,7 +160,7 @@ public class UserAuthServiceImpl implements UserAuthService {
         userLoginRespVO.setToken(token);
 
         //更新登录时间
-        userAuthMapper.updateLastLoginTime(userLoginDTO.getUserInfoDTO().getUid(),LocalDateTime.now());
+        userAuthMapper.updateLastLoginTime(userLoginDTO.getUserInfoDTO().getUid(), LocalDateTime.now());
 
         return userLoginRespVO;
     }
@@ -183,7 +191,7 @@ public class UserAuthServiceImpl implements UserAuthService {
         long timestamp = System.currentTimeMillis();
         String logoffUsername = username + UserConstant.USER_DELETE + timestamp;
         //注销用户
-        Integer res = userAuthMapper.updateUserStatus(uid, StatusConstant.DISABLE, logoffUsername);
+        Integer res = userAuthMapper.updateUserStatus(uid, StatusConstant.DISABLE, logoffUsername,"deleted");
 
         if (res <= 0) {
             throw new BusinessException(ResultCode.ERROR);
@@ -193,29 +201,98 @@ public class UserAuthServiceImpl implements UserAuthService {
 
     /**
      * 重置密码
+     *
      * @param userResetDTO 用户提交的原密码和新密码
      * @return
      */
     @Override
-    public void reset(Long uid,UserResetDTO userResetDTO) {
-        log.info("将uid为：{}的用户的原密码：{}更新为新密码：{}",uid,userResetDTO.getOriginalPassword(),userResetDTO.getNewPassword());
+    public void reset(Long uid, UserResetDTO userResetDTO) {
+        log.info("将uid为：{}的用户的原密码：{}更新为新密码：{}", uid, userResetDTO.getOriginalPassword(), userResetDTO.getNewPassword());
 
         //判断原密码是否正确
         String password = userAuthMapper.selectPasswordByUid(uid);
-        log.info("密码验证结果：{}",PasswordUtils.match(userResetDTO.getOriginalPassword(),password));
-        if(!PasswordUtils.match(userResetDTO.getOriginalPassword(),password)){
+        log.info("密码验证结果：{}", PasswordUtils.match(userResetDTO.getOriginalPassword(), password));
+        if (!PasswordUtils.match(userResetDTO.getOriginalPassword(), password)) {
             throw new BusinessException(ResultCode.PASSWORD_ERROR);
         }
 
         //更新密码
         //加密新密码
         String newPassword = PasswordUtils.encrypt(userResetDTO.getNewPassword());
-        Integer result = userAuthMapper.updatePassword(uid,newPassword);
-        if(result <= 0){
+        Integer result = userAuthMapper.updatePassword(uid, newPassword);
+        if (result <= 0) {
             throw new BusinessException(ResultCode.ERROR);
         }
 
-        log.info("用户uid为{}的密码成功",uid);
+        log.info("用户uid为{}的密码成功", uid);
+    }
+
+    /**
+     * 邮箱验证码
+     * @param uid 用户uid
+     * @param email 邮箱
+     */
+    @Override
+    public void code(Long uid, String email) {
+
+        //判断邮箱是否已被绑定
+        //查询邮箱
+        if(userAuthMapper.existEmail(email)){
+            throw new BusinessException(ResultCode.EMAIL_HAS_BINDING);
+        }
+
+        //生成随机验证码
+        String code = RandomUtil.randomNumbers(6);
+
+        //邮箱内容
+        String content = "您的验证码是" + code + "，验证码5分钟内有效";
+
+        //发送邮箱验证码
+        mailService.send(email, "验证码", content);
+
+        //将验证码存入redis中
+        String emailHash = DigestUtils.md5Hex(email);
+        //设置redis的key
+        String key =RedisKeyPrefixConstant.EMAIL_CODE + uid +":"+emailHash;
+        redisTemplate.opsForValue().set(key, code, 5, TimeUnit.MINUTES);
+    }
+
+    /**
+     * 绑定邮箱
+     * @param uid 用户uid
+     * @param userBindEmailDTO 用户绑定邮箱的信息
+     */
+    @Override
+    public void email(Long uid, UserBindEmailDTO userBindEmailDTO) {
+        log.info("开始进行绑定邮箱操作");
+        //对邮箱进行hash
+        String emailHash = DigestUtils.md5Hex(userBindEmailDTO.getEmail());
+        //设置redis的key
+        String key =RedisKeyPrefixConstant.EMAIL_CODE + uid +":"+emailHash;
+
+        if(userAuthMapper.existEmail(userBindEmailDTO.getEmail())){
+            //清除code
+            redisTemplate.delete(key);
+            throw new BusinessException(ResultCode.EMAIL_HAS_BINDING);
+        }
+
+        String code = (String) redisTemplate.opsForValue().get(key);
+
+         if (code == null) {
+            throw new BusinessException(ResultCode.EMAIL_CODE_EXPIRED);
+        }
+
+        if (!userBindEmailDTO.getCode().equals(code)) {
+            throw new BusinessException(ResultCode.EMAIL_CODE_ERROR);
+        }
+
+        Integer result = userAuthMapper.updateEmail(uid, userBindEmailDTO.getEmail());
+        if (result <= 0) {
+           throw new BusinessException(ResultCode.ERROR);
+        }
+
+        redisTemplate.delete(key);
+
     }
 
 }

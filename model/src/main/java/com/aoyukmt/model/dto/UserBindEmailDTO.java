@@ -15,7 +15,7 @@ public class UserBindEmailDTO {
     /**
      * 邮箱验证码
      */
-    private Integer code;
+    private String code;
 
     /**
      * 邮箱

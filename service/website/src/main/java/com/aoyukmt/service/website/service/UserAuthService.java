@@ -1,5 +1,6 @@
 package com.aoyukmt.service.website.service;
 
+import com.aoyukmt.model.dto.UserBindEmailDTO;
 import com.aoyukmt.model.dto.UserLoginDTO;
 import com.aoyukmt.model.dto.UserResetDTO;
 import com.aoyukmt.model.vo.req.UserLoginReqVO;
@@ -43,4 +44,18 @@ public interface UserAuthService {
      * @return 更新结果
      */
     void reset(Long uid,UserResetDTO userResetDTO);
+
+    /**
+     * 获取邮箱验证码
+     * @param uid 用户uid
+     * @return 验证码
+     */
+    void code(Long uid,String email);
+
+    /**
+     * 绑定邮箱
+     * @param uid 用户uid
+     * @param userBindEmailDTO 用户绑定邮箱的信息
+     */
+    void email(Long uid, UserBindEmailDTO userBindEmailDTO);
 }

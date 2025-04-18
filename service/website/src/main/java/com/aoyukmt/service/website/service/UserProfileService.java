@@ -17,6 +17,7 @@ public interface UserProfileService {
 
     /**
      * 获取用户信息
+     *
      * @return 用户信息实体
      */
     UserInfoDTO getUserInfo(Long uid);
@@ -24,6 +25,7 @@ public interface UserProfileService {
 
     /**
      * 更新用户信息
+     *
      * @param userUpdateDTO 用户需要更新的参数
      * @return 更新结果
      */
@@ -32,9 +34,17 @@ public interface UserProfileService {
 
     /**
      * 用户修改头像
+     *
      * @param file
      * @return 头像图片url
      */
-    String avatar(String action,MultipartFile file) throws IOException;
+    String localAvatar(Long uid, MultipartFile file) throws IOException;
+
+    /**
+     * 生成随机头像返回
+     *
+     * @return 随机头像url
+     */
+    String randomAvatar(Long uid,String action);
 
 }

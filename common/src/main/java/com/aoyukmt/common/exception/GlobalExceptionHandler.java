@@ -6,6 +6,8 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailSendException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -71,6 +73,15 @@ public class GlobalExceptionHandler {
         }
 
         return Result.error(ResultCode.PARAM_ERROR, errorMap);
+    }
+
+    @ExceptionHandler(MailException.class)
+    public Result<?> handleMailException(MailException e){
+        log.info("邮箱服务异常：msg:{},cause:{}",e.getMessage(),e.getCause());
+        if(e.getMessage().contains("550")){
+            return Result.error(600,"邮箱不存在或不可达");
+        }
+        return Result.error(ResultCode.SYSTEM_ERROR);
     }
 
 

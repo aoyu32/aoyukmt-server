@@ -42,4 +42,10 @@ public class UserConstant {
      */
     public static final Set<String> FILE_TYPE = Set.of("image/jpeg", "image/png", "image/jpg");
 
+    /**
+     * 用户操作随机头像的行为
+     */
+    public static final String USER_CONFIRM_RANDOM_AVATAR_ACTION = "confirm";
+    public static final String USER_GENERATE_RANDOM_AVATAR_ACTION = "generate";
+
 }
