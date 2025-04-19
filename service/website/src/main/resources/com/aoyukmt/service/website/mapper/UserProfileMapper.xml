@@ -32,7 +32,7 @@
         <result property="gender" column="user_gender"/>
         <result property="bio" column="user_bio"/>
         <result property="activeStatus" column="user_active_status"/>
-        <result property="ipInfo" column="user_ip_info"/>
+        <result property="ipInfo" column="user_ip_info" typeHandler="com.aoyukmt.model.handler.UserIpInfoTypeHandler"/>
         <result property="username" column="user_username"/>
         <result property="registrationTime" column="user_registration_time"/>
         <result property="email" column="user_email"/>

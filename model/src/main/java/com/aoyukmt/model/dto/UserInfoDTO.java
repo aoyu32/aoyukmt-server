@@ -1,5 +1,6 @@
 package com.aoyukmt.model.dto;
 
+import com.aoyukmt.model.entity.UserIpInfo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
@@ -74,6 +75,6 @@ public class UserInfoDTO {
     /**
      * ip信息
      */
-    private String ipInfo;
+    private UserIpInfo ipInfo;
 
 }

@@ -12,6 +12,7 @@ import com.aoyukmt.common.utils.JwtUtils;
 import com.aoyukmt.common.utils.PasswordUtils;
 import com.aoyukmt.common.utils.UserInfoUtils;
 import com.aoyukmt.model.dto.*;
+import com.aoyukmt.model.entity.UserIpInfo;
 import com.aoyukmt.model.vo.req.UserLoginReqVO;
 import com.aoyukmt.model.vo.req.UserRegisterReqVO;
 import com.aoyukmt.model.vo.resp.UserLoginRespVO;
@@ -20,8 +21,8 @@ import com.aoyukmt.service.website.mapper.UserAuthMapper;
 import com.aoyukmt.service.website.mapper.UserProfileMapper;
 import com.aoyukmt.service.website.service.MailService;
 import com.aoyukmt.service.website.service.UserAuthService;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -88,24 +89,30 @@ public class UserAuthServiceImpl implements UserAuthService {
 
         //生成随机头像url
         String randomAvatarUrl = DiceBearAvatarGenerator.generateRandomAvatarUrl();
+
+        //获取用户ip地址
+//        String userIp = IpUtils.getIpAddr(request);
+        //先固定ip
+//        String userIp = "38.207.137.78";
+        String userIp = IpUtils.getPublicIp();
+        log.info("用户ip:{}", userIp);
+        //获取用户ip详细详细
+        UserIpInfo ipInfo = IpUtils.getIpInfo(userIp, UserIpInfo.class);
+        log.info("用户ip详细详细：{} ",ipInfo.toString());
+        //序列化为json字符串
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String ipInfoJson = objectMapper.writeValueAsString(ipInfo);
+            userProfile.setIpInfo(ipInfoJson);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
         userProfile.setNickname(randomNickname);
         userProfile.setAvatar(randomAvatarUrl);
-
-        //获取用户ip信息
-//        String userIp = UserInfoUtils.getClientIp(request);
-        String userIp = IpUtils.getIpAddr(request);
-
-        log.info("用户ip:{}", userIp);
-        JsonObject userIpJson = new JsonObject();
-        userIpJson.addProperty("ip", userIp);
-        Gson gson = new Gson();
-        String userIpInfo = gson.toJson(userIpJson);
-        log.info("用户ip json:{}", userIpInfo);
-        userProfile.setIpInfo(userIpInfo);
-
-
         //插入用户基本信息
         userProfileMapper.insert(userProfile);
+
         //创建用户认证实体
         UserAuthRegisterDTO userAuth = new UserAuthRegisterDTO();
         userAuth.setUsername(userRegisterReqVO.getUsername());
@@ -137,6 +144,11 @@ public class UserAuthServiceImpl implements UserAuthService {
     @UserAuth
     public UserLoginRespVO login(UserLoginReqVO userLoginReqVO) {
 
+        //获取当前ip
+        String userIp = IpUtils.getPublicIp();
+        //获取ip详细详细
+        UserIpInfo ipInfo = IpUtils.getIpInfo(userIp, UserIpInfo.class);
+
         //查询用户信息
         UserLoginDTO userLoginDTO = userAuthMapper.selectUser(userLoginReqVO.getAccount());
 
@@ -144,11 +156,14 @@ public class UserAuthServiceImpl implements UserAuthService {
             throw new BusinessException(ResultCode.ACCOUNT_OR_PASSWORD_ERROR);
         }
 
+        //更新当前登录的ip详细信息
+        UserInfoDTO userInfoDTO = userLoginDTO.getUserInfoDTO();
+        userInfoDTO.setIpInfo(ipInfo);
+
         //判断密码
         if (!PasswordUtils.match(userLoginReqVO.getPassword(), userLoginDTO.getPassword())) {
             throw new BusinessException(ResultCode.ACCOUNT_OR_PASSWORD_ERROR);
         }
-
         //生成token
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", userLoginDTO.getUserInfoDTO().getUsername());
@@ -161,6 +176,17 @@ public class UserAuthServiceImpl implements UserAuthService {
 
         //更新登录时间
         userAuthMapper.updateLastLoginTime(userLoginDTO.getUserInfoDTO().getUid(), LocalDateTime.now());
+        //更新登录ip
+        userAuthMapper.updateLastLoginIp(userLoginDTO.getUserInfoDTO().getUid(),userIp);
+        //更新ip详细信息
+        //序列化ip信息
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String ipInfoJson = objectMapper.writeValueAsString(ipInfo);
+            userProfileMapper.updateIpInfo(userLoginDTO.getUserInfoDTO().getUid(),ipInfoJson);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         return userLoginRespVO;
     }
@@ -191,7 +217,7 @@ public class UserAuthServiceImpl implements UserAuthService {
         long timestamp = System.currentTimeMillis();
         String logoffUsername = username + UserConstant.USER_DELETE + timestamp;
         //注销用户
-        Integer res = userAuthMapper.updateUserStatus(uid, StatusConstant.DISABLE, logoffUsername,"deleted");
+        Integer res = userAuthMapper.updateUserStatus(uid, StatusConstant.DISABLE, logoffUsername,"deleted:email:"+logoffUsername);
 
         if (res <= 0) {
             throw new BusinessException(ResultCode.ERROR);
@@ -223,7 +249,6 @@ public class UserAuthServiceImpl implements UserAuthService {
         if (result <= 0) {
             throw new BusinessException(ResultCode.ERROR);
         }
-
         log.info("用户uid为{}的密码成功", uid);
     }
 

@@ -2,15 +2,12 @@ package com.aoyukmt.service.website.mapper;
 
 import com.aoyukmt.model.dto.UserAuthRegisterDTO;
 import com.aoyukmt.model.dto.UserLoginDTO;
-import com.aoyukmt.model.dto.UserResetDTO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.Map;
 
 /**
  * @InterfaceName：UserAuthMapper
@@ -104,4 +101,11 @@ public interface UserAuthMapper {
     @Update("update user_auth set email = #{email} where uid = #{uid}")
     Integer updateEmail(Long uid,String email);
 
+    /**
+     * 更新登录的ip地址
+     * @param uid 用户id
+     * @param userIp 用户登录的ip
+     */
+    @Update("update user_auth set last_login_ip = #{userIp} where uid = #{uid}")
+    void updateLastLoginIp(Long uid, String userIp);
 }

@@ -37,4 +37,6 @@ public interface UserProfileMapper {
     @Update("update user_profile set avatar = #{avatarUrl} where id = #{uid}")
     Integer updateAvatarById(Long uid,String avatarUrl);
 
+    @Update("update user_profile set ip_info = #{ipInfoJson} where id = #{uid}")
+    void updateIpInfo(Long uid, String ipInfoJson);
 }
