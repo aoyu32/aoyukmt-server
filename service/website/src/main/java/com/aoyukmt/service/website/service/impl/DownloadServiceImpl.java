@@ -1,6 +1,6 @@
 package com.aoyukmt.service.website.service.impl;
 
-import com.aoyukmt.common.constant.DownloadConstants;
+import com.aoyukmt.common.constant.DownloadConstant;
 import com.aoyukmt.common.enumeration.ResultCode;
 import com.aoyukmt.common.exception.BusinessException;
 import com.aoyukmt.model.entity.AppDownloadRecord;
@@ -99,12 +99,12 @@ public class DownloadServiceImpl implements DownloadService {
 
          //  构建本地文件路径
         String filePath = appResourcesPath + File.separator;
-        if (extension.equals(DownloadConstants.EXE_FILE)) {
-            filePath = filePath + versionType + File.separator + DownloadConstants.INSTALLER + File.separator + appFileName;
+        if (extension.equals(DownloadConstant.EXE_FILE)) {
+            filePath = filePath + versionType + File.separator + DownloadConstant.INSTALLER + File.separator + appFileName;
             log.info("构建文件本地路径: {}", filePath);
         }
-        if (extension.equals(DownloadConstants.ZIP_FILE)) {
-            filePath = filePath + versionType + File.separator + DownloadConstants.ZIP + File.separator + appFileName;
+        if (extension.equals(DownloadConstant.ZIP_FILE)) {
+            filePath = filePath + versionType + File.separator + DownloadConstant.ZIP + File.separator + appFileName;
             log.info("构建文件本地路径: {}", filePath);
         }
 

@@ -49,9 +49,9 @@ public class AliYunOSSUtils {
      * @param fileName
      * @return
      */
-    public String uploadFile(byte[] file, String fileName){
+    public String uploadFile(byte[] file, String fileName,String ossDir){
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
-        String objectName = UserConstant.ALI_OSS_USER_AVATAR_DIR_PATH + generateFileName(fileName);
+        String objectName = ossDir + generateFileName(fileName);
         try {
             ossClient.putObject(bucketName, objectName, new ByteArrayInputStream(file));
         }catch (OSSException oe) {

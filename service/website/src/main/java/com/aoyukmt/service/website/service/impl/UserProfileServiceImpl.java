@@ -9,6 +9,7 @@ import com.aoyukmt.common.utils.AliYunOSSUtils;
 import com.aoyukmt.model.dto.UserInfoDTO;
 import com.aoyukmt.model.dto.UserUpdateDTO;
 import com.aoyukmt.service.website.mapper.UserProfileMapper;
+import com.aoyukmt.service.website.service.OssService;
 import com.aoyukmt.service.website.service.UserProfileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class UserProfileServiceImpl implements UserProfileService {
     private UserProfileMapper userProfileMapper;
 
     @Autowired
-    private AliYunOSSUtils aliyunOSSUtils;
+    OssService ossService;
 
     @Autowired
     RedisTemplate<String, String> redisTemplate;
@@ -94,7 +95,7 @@ public class UserProfileServiceImpl implements UserProfileService {
         }
 
         //上传图片
-        String avatarUrl = aliyunOSSUtils.uploadFile(file.getBytes(), file.getOriginalFilename());
+        String avatarUrl = ossService.upload(file,UserConstant.ALI_OSS_USER_AVATAR_DIR_PATH);
         log.info("上传头像图片到OSS，返回图片url: {}", avatarUrl);
 
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aoyukmt.service.website.mapper.FeedbackMapper">
+
+    <!--    批量插入用户反馈的附件信息-->
+    <insert id="insertAttachment" parameterType="java.util.List">
+
+        insert into feedback_attachment
+            (uid,feedback_id,file_name,file_url,file_type,file_size)
+        values
+            <foreach collection="list" item="item" index="index" open="(" separator="),(" close=")">
+                #{item.uid},#{item.feedbackId},#{item.fileName},#{item.fileUrl},#{item.fileType},#{item.fileSize}
+            </foreach>
+    </insert>
+
+</mapper>

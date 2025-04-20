@@ -7,7 +7,7 @@ package com.aoyukmt.common.constant;
  * @Description: 下载频率限制常量
  */
 
-public class DownloadConstants {
+public class DownloadConstant {
 
     //最大请求数
     public static final int MAX_REQUESTS = 5;

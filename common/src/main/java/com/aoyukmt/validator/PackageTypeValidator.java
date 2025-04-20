@@ -1,9 +1,8 @@
 package com.aoyukmt.validator;
 
 import com.aoyukmt.annotation.PackageTypeValidation;
-import com.aoyukmt.common.constant.DownloadConstants;
+import com.aoyukmt.common.constant.DownloadConstant;
 import com.aoyukmt.common.constant.ValidationConstant;
-import com.aoyukmt.common.constant.VersionTypeConstant;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -20,7 +19,7 @@ public class PackageTypeValidator implements ConstraintValidator<PackageTypeVali
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        if(!Set.of(DownloadConstants.INSTALLER,DownloadConstants.ZIP).contains(s)){
+        if(!Set.of(DownloadConstant.INSTALLER, DownloadConstant.ZIP).contains(s)){
             constraintValidatorContext.disableDefaultConstraintViolation();
             constraintValidatorContext.buildConstraintViolationWithTemplate(ValidationConstant.UNKNOWN_PACKAGE_TYPE).addConstraintViolation();
             return false;

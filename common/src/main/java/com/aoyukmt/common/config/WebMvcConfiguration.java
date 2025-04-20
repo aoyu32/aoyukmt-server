@@ -35,7 +35,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     }
 
-    //注册下载请求拦截器
+    //用户请求拦截器
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(downloadInterceptor)
@@ -44,6 +44,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         registry.addInterceptor(jwtInterceptor)
                 .addPathPatterns("/web/user/**")
                 .addPathPatterns("/web/auth/**")
+                .addPathPatterns("/web/feedback/**")
                 .excludePathPatterns("/web/auth/login","/web/auth/register");
 
     }

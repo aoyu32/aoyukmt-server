@@ -1,6 +1,6 @@
 package com.aoyukmt.service.website.aop;
 
-import com.aoyukmt.common.constant.DownloadConstants;
+import com.aoyukmt.common.constant.DownloadConstant;
 import com.aoyukmt.common.constant.RedisKeyPrefixConstant;
 import com.aoyukmt.common.enumeration.ResultCode;
 import com.aoyukmt.common.exception.BusinessException;
@@ -16,8 +16,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -124,7 +122,7 @@ public class DownloadRecordAspect {
 
             // 生成下载id作为key存入redis中
             String downloadId = UUID.randomUUID().toString();
-            redisTemplate.opsForValue().set(RedisKeyPrefixConstant.DOWNLOAD_ID + downloadId, appDownloadRecord, DownloadConstants.DOWNLOAD_ID_TIMEOUT, TimeUnit.SECONDS);
+            redisTemplate.opsForValue().set(RedisKeyPrefixConstant.DOWNLOAD_ID + downloadId, appDownloadRecord, DownloadConstant.DOWNLOAD_ID_TIMEOUT, TimeUnit.SECONDS);
             log.info("下载ID已存入Redis: {}", downloadId);
 
             // 执行目标方法获取返回值

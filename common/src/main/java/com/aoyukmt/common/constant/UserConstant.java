@@ -35,7 +35,7 @@ public class UserConstant {
     /**
      * 用户头像oss文件夹路径
      */
-    public static final String ALI_OSS_USER_AVATAR_DIR_PATH = "img/user/avatar/";
+    public static final String ALI_OSS_USER_AVATAR_DIR_PATH = "user/avatar/";
 
     /**
      * 支持的头像图片类型

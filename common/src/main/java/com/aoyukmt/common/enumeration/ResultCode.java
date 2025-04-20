@@ -92,7 +92,12 @@ public enum ResultCode {
     /**
      * 邮箱已经被绑定
      */
-    EMAIL_HAS_BINDING(448,"邮箱已被绑定");
+    EMAIL_HAS_BINDING(448,"邮箱已被绑定"),
+
+    /**
+     * 未知的反馈类型
+     */
+    UNKNOWN_FEEDBACK_TYPE(449,"未知的反馈类型");
 
     @Getter
     private final int code;

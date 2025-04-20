@@ -54,13 +54,5 @@ public class FeatureDetailController {
         return Result.success(allFeatureDetail);
     }
 
-    @Operation(summary = "上传详情展示图片", description = "官网主页功能详情展示列表图片上传接口")
-    @PostMapping("/img")
-    public Result<?> uploadDetailImage(MultipartFile file) throws IOException {
-        log.info("文件名：{}", file.getOriginalFilename());
-        String filePath = aliyunOSSUtils.uploadFile(file.getBytes(), file.getOriginalFilename());
-        log.info("上传图片：{}", filePath);
-        return Result.success("上传成功");
-    }
 
 }
