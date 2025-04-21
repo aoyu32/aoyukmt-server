@@ -29,4 +29,5 @@ public interface OssService {
     List<String> uploadFileList(List<MultipartFile> fileList,String ossDir)  throws IOException;
 
 
+
 }

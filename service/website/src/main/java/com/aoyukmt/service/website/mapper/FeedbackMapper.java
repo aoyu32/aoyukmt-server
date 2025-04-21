@@ -2,6 +2,7 @@ package com.aoyukmt.service.website.mapper;
 
 import com.aoyukmt.model.dto.FeedbackSubmitAttachmentDTO;
 import com.aoyukmt.model.dto.FeedbackSubmitInfoDTO;
+import com.aoyukmt.model.vo.resp.FeedbackListRespVO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
@@ -35,4 +36,10 @@ public interface FeedbackMapper {
     Integer insertAttachment(List<FeedbackSubmitAttachmentDTO> files);
 
 
+    /**
+     * 根据uid查询该用户的所有反馈
+     * @param uid 用户uid
+     * @return 用户反馈列表
+     */
+    List<FeedbackListRespVO> selectAll(Long uid);
 }

@@ -7,6 +7,7 @@ import com.aoyukmt.common.exception.BusinessException;
 import com.aoyukmt.model.dto.FeedbackSubmitAttachmentDTO;
 import com.aoyukmt.model.dto.FeedbackSubmitInfoDTO;
 import com.aoyukmt.model.vo.req.FeedbackSubmitReqVO;
+import com.aoyukmt.model.vo.resp.FeedbackListRespVO;
 import com.aoyukmt.service.website.mapper.FeedbackMapper;
 import com.aoyukmt.service.website.service.FeedbackService;
 import com.aoyukmt.service.website.service.OssService;
@@ -106,6 +107,19 @@ public class FeedbackServiceImpl implements FeedbackService {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    /**
+     * 获取所有用户的反馈列表
+     * @param uid 用户id
+     * @return 反馈列表
+     */
+    @Override
+    public List<FeedbackListRespVO> getFeedbackList(Long uid) {
+        log.info("开始获取用户uid为：{}的反馈列表",uid);
+        List<FeedbackListRespVO> feedbackListRespVOS = feedbackMapper.selectAll(uid);
+        log.info("查询到用户uid为：{}的用户的所有反馈信息：{}",uid,feedbackListRespVOS);
+        return feedbackListRespVOS;
     }
 
 

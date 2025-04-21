@@ -6,11 +6,38 @@
     <insert id="insertAttachment" parameterType="java.util.List">
 
         insert into feedback_attachment
-            (uid,feedback_id,file_name,file_url,file_type,file_size)
+        (uid,feedback_id,file_name,file_url,file_type,file_size)
         values
-            <foreach collection="list" item="item" index="index" open="(" separator="),(" close=")">
-                #{item.uid},#{item.feedbackId},#{item.fileName},#{item.fileUrl},#{item.fileType},#{item.fileSize}
-            </foreach>
+        <foreach collection="list" item="item" index="index" open="(" separator="),(" close=")">
+            #{item.uid},#{item.feedbackId},#{item.fileName},#{item.fileUrl},#{item.fileType},#{item.fileSize}
+        </foreach>
     </insert>
+
+
+    <!--    根据uid查询所有反馈信息列表-->
+    <select id="selectAll" resultMap="FeedbackListMap">
+        SELECT id, responder, content, type, create_time
+        FROM feedback
+        WHERE uid = #{uid}
+          and is_deleted = 0
+        ORDER BY create_time ASC
+    </select>
+
+    <select id="selectAttachments" resultType="string">
+        SELECT file_name
+        FROM feedback_attachment
+        WHERE feedback_id = #{feedbackId} AND is_deleted = 0
+    </select>
+
+    <resultMap id="FeedbackListMap" type="com.aoyukmt.model.vo.resp.FeedbackListRespVO">
+        <id property="id" column="id"/>
+        <result property="responder" column="responder"/>
+        <result property="content" column="content"/>
+        <result property="type" column="type"/>
+        <result property="createTime" column="create_time"/>
+        <collection property="attachments" ofType="string" column="id"
+                    select="com.aoyukmt.service.website.mapper.FeedbackMapper.selectAttachments"/>
+    </resultMap>
+
 
 </mapper>
