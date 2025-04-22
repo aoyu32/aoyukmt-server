@@ -1,11 +1,13 @@
 package com.aoyukmt.service.website.controller;
 
+import com.aoyukmt.common.constant.RedisKeyPrefixConstant;
 import com.aoyukmt.common.result.Result;
 import com.aoyukmt.common.utils.ThreadLocalUtils;
 import com.aoyukmt.model.dto.UserBindEmailDTO;
-import com.aoyukmt.model.dto.UserResetDTO;
+import com.aoyukmt.model.dto.UserModifyPasswordDTO;
 import com.aoyukmt.model.vo.req.UserLoginReqVO;
 import com.aoyukmt.model.vo.req.UserRegisterReqVO;
+import com.aoyukmt.model.vo.req.UserResetReqVO;
 import com.aoyukmt.model.vo.resp.UserLoginRespVO;
 import com.aoyukmt.service.website.service.UserAuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,12 +64,12 @@ public class UserAuthController {
     }
 
 
-    @Operation(summary = "重置密码", description = "重置用户的密码接口")
-    @PostMapping("/reset")
-    public Result<?> reset(@RequestBody UserResetDTO userResetDTO) {
+    @Operation(summary = "修改密码", description = "用户登录后用户修改密码的接口")
+    @PostMapping("/modify")
+    public Result<?> reset(@RequestBody UserModifyPasswordDTO userModifyPasswordDTO) {
         Long uid = Long.valueOf(ThreadLocalUtils.get("uid").toString());
         log.info("用户uid为：{}请求重置密码", uid);
-        userAuthService.reset(uid, userResetDTO);
+        userAuthService.modify(uid, userModifyPasswordDTO);
         log.info("更新用户为uid{}密码完成", uid);
         return Result.success();
     }
@@ -76,8 +78,8 @@ public class UserAuthController {
     @PostMapping("/code")
     public Result<String> code(@RequestBody Map<String,String> param) {
         Long uid = Long.valueOf(ThreadLocalUtils.get("uid").toString());
-        log.info("用户id为：{},请求获取邮箱验证码，邮箱为{}", uid, param.get("email"));
-        userAuthService.code(uid, param.get("email"));
+        log.info("用户id为：{},请求获取{}邮箱验证码，邮箱为{}", uid,param.get("type"), param.get("email"));
+        userAuthService.code(param.get("email"), param.get("type"));
         log.info("验证码发送成功");
         return Result.success();
     }
@@ -91,5 +93,14 @@ public class UserAuthController {
         return Result.success();
     }
 
+
+    @Operation(summary = "重置密码",description = "忘记密码后重置密码")
+    @PostMapping("reset")
+    public Result<?> resetPassword(@RequestBody UserResetReqVO userResetReqVO){
+        log.info("邮箱为：{}的用户请求重置密码",userResetReqVO.getEmail());
+        userAuthService.reset(userResetReqVO);
+        log.info("重置密码成功");
+        return Result.success();
+    }
 
 }

@@ -5,6 +5,7 @@ import com.aoyukmt.common.avatar.DiceBearAvatarGenerator;
 import com.aoyukmt.common.constant.RedisKeyPrefixConstant;
 import com.aoyukmt.common.constant.StatusConstant;
 import com.aoyukmt.common.constant.UserConstant;
+import com.aoyukmt.common.constant.VerificationCodeConstant;
 import com.aoyukmt.common.enumeration.ResultCode;
 import com.aoyukmt.common.exception.BusinessException;
 import com.aoyukmt.common.utils.IpUtils;
@@ -15,6 +16,7 @@ import com.aoyukmt.model.dto.*;
 import com.aoyukmt.model.entity.UserIpInfo;
 import com.aoyukmt.model.vo.req.UserLoginReqVO;
 import com.aoyukmt.model.vo.req.UserRegisterReqVO;
+import com.aoyukmt.model.vo.req.UserResetReqVO;
 import com.aoyukmt.model.vo.resp.UserLoginRespVO;
 import com.aoyukmt.service.website.annotation.UserAuth;
 import com.aoyukmt.service.website.mapper.UserAuthMapper;
@@ -98,7 +100,7 @@ public class UserAuthServiceImpl implements UserAuthService {
         log.info("用户ip:{}", userIp);
         //获取用户ip详细详细
         UserIpInfo ipInfo = IpUtils.getIpInfo(userIp, UserIpInfo.class);
-        log.info("用户ip详细详细：{} ",ipInfo.toString());
+        log.info("用户ip详细详细：{} ", ipInfo.toString());
         //序列化为json字符串
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -177,13 +179,13 @@ public class UserAuthServiceImpl implements UserAuthService {
         //更新登录时间
         userAuthMapper.updateLastLoginTime(userLoginDTO.getUserInfoDTO().getUid(), LocalDateTime.now());
         //更新登录ip
-        userAuthMapper.updateLastLoginIp(userLoginDTO.getUserInfoDTO().getUid(),userIp);
+        userAuthMapper.updateLastLoginIp(userLoginDTO.getUserInfoDTO().getUid(), userIp);
         //更新ip详细信息
         //序列化ip信息
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             String ipInfoJson = objectMapper.writeValueAsString(ipInfo);
-            userProfileMapper.updateIpInfo(userLoginDTO.getUserInfoDTO().getUid(),ipInfoJson);
+            userProfileMapper.updateIpInfo(userLoginDTO.getUserInfoDTO().getUid(), ipInfoJson);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -217,7 +219,7 @@ public class UserAuthServiceImpl implements UserAuthService {
         long timestamp = System.currentTimeMillis();
         String logoffUsername = username + UserConstant.USER_DELETE + timestamp;
         //注销用户
-        Integer res = userAuthMapper.updateUserStatus(uid, StatusConstant.DISABLE, logoffUsername,"deleted:email:"+logoffUsername);
+        Integer res = userAuthMapper.updateUserStatus(uid, StatusConstant.DISABLE, logoffUsername, "deleted:email:" + logoffUsername);
 
         if (res <= 0) {
             throw new BusinessException(ResultCode.ERROR);
@@ -228,23 +230,23 @@ public class UserAuthServiceImpl implements UserAuthService {
     /**
      * 重置密码
      *
-     * @param userResetDTO 用户提交的原密码和新密码
+     * @param userModifyPasswordDTO 用户提交的原密码和新密码
      * @return
      */
     @Override
-    public void reset(Long uid, UserResetDTO userResetDTO) {
-        log.info("将uid为：{}的用户的原密码：{}更新为新密码：{}", uid, userResetDTO.getOriginalPassword(), userResetDTO.getNewPassword());
+    public void modify(Long uid, UserModifyPasswordDTO userModifyPasswordDTO) {
+        log.info("将uid为：{}的用户的原密码：{}更新为新密码：{}", uid, userModifyPasswordDTO.getOriginalPassword(), userModifyPasswordDTO.getNewPassword());
 
         //判断原密码是否正确
         String password = userAuthMapper.selectPasswordByUid(uid);
-        log.info("密码验证结果：{}", PasswordUtils.match(userResetDTO.getOriginalPassword(), password));
-        if (!PasswordUtils.match(userResetDTO.getOriginalPassword(), password)) {
+        log.info("密码验证结果：{}", PasswordUtils.match(userModifyPasswordDTO.getOriginalPassword(), password));
+        if (!PasswordUtils.match(userModifyPasswordDTO.getOriginalPassword(), password)) {
             throw new BusinessException(ResultCode.PASSWORD_ERROR);
         }
 
         //更新密码
         //加密新密码
-        String newPassword = PasswordUtils.encrypt(userResetDTO.getNewPassword());
+        String newPassword = PasswordUtils.encrypt(userModifyPasswordDTO.getNewPassword());
         Integer result = userAuthMapper.updatePassword(uid, newPassword);
         if (result <= 0) {
             throw new BusinessException(ResultCode.ERROR);
@@ -254,15 +256,17 @@ public class UserAuthServiceImpl implements UserAuthService {
 
     /**
      * 邮箱验证码
-     * @param uid 用户uid
+     *
      * @param email 邮箱
      */
     @Override
-    public void code(Long uid, String email) {
-
+    public void code(String email,String type) {
+        if(type == null || type.isEmpty() || !VerificationCodeConstant.isContains(type)) {
+            throw new BusinessException(ResultCode.UNKNOWN_EMAIL_CODE_SERVICE);
+        }
         //判断邮箱是否已被绑定
         //查询邮箱
-        if(userAuthMapper.existEmail(email)){
+        if (userAuthMapper.existEmail(email)) {
             throw new BusinessException(ResultCode.EMAIL_HAS_BINDING);
         }
 
@@ -277,14 +281,23 @@ public class UserAuthServiceImpl implements UserAuthService {
 
         //将验证码存入redis中
         String emailHash = DigestUtils.md5Hex(email);
+
         //设置redis的key
-        String key =RedisKeyPrefixConstant.EMAIL_CODE + uid +":"+emailHash;
+        String keyPrefix = "";
+        if(type.equals(VerificationCodeConstant.BINDING_VERIFICATION_CODE)){
+            keyPrefix = RedisKeyPrefixConstant.VERIFY_CODE_EMAIL_BINDING;
+        }
+        if (type.equals(VerificationCodeConstant.RESET_VERIFICATION_COde)){
+            keyPrefix = RedisKeyPrefixConstant.EMAIL_VERIFY_RESET_CODE;
+        }
+
+        String key = keyPrefix + emailHash;
         redisTemplate.opsForValue().set(key, code, 5, TimeUnit.MINUTES);
     }
 
     /**
      * 绑定邮箱
-     * @param uid 用户uid
+     * @param uid              用户uid
      * @param userBindEmailDTO 用户绑定邮箱的信息
      */
     @Override
@@ -293,9 +306,9 @@ public class UserAuthServiceImpl implements UserAuthService {
         //对邮箱进行hash
         String emailHash = DigestUtils.md5Hex(userBindEmailDTO.getEmail());
         //设置redis的key
-        String key =RedisKeyPrefixConstant.EMAIL_CODE + uid +":"+emailHash;
+        String key = RedisKeyPrefixConstant.VERIFY_CODE_EMAIL_BINDING + emailHash;
 
-        if(userAuthMapper.existEmail(userBindEmailDTO.getEmail())){
+        if (userAuthMapper.existEmail(userBindEmailDTO.getEmail())) {
             //清除code
             redisTemplate.delete(key);
             throw new BusinessException(ResultCode.EMAIL_HAS_BINDING);
@@ -303,7 +316,7 @@ public class UserAuthServiceImpl implements UserAuthService {
 
         String code = (String) redisTemplate.opsForValue().get(key);
 
-         if (code == null) {
+        if (code == null) {
             throw new BusinessException(ResultCode.EMAIL_CODE_EXPIRED);
         }
 
@@ -313,11 +326,50 @@ public class UserAuthServiceImpl implements UserAuthService {
 
         Integer result = userAuthMapper.updateEmail(uid, userBindEmailDTO.getEmail());
         if (result <= 0) {
-           throw new BusinessException(ResultCode.ERROR);
+            throw new BusinessException(ResultCode.ERROR);
         }
 
         redisTemplate.delete(key);
 
+    }
+
+    /**
+     * 用户忘记密码后重置密码
+     *
+     * @param userResetReqVO 用户重置密码提交的数据
+     */
+    @Override
+    @UserAuth
+    public void reset(UserResetReqVO userResetReqVO) {
+        log.info("开始处理用户重置密码，用户提交的数据{}", userResetReqVO);
+        //判断邮箱是否存在
+        Long uid = userAuthMapper.selectUidByEmail(userResetReqVO.getEmail());
+
+        if(uid == null){
+            throw new BusinessException(ResultCode.UNKNOWN_EMAIL_ACCOUNT);
+        }
+
+        //判断邮箱验证码是否正确
+        //对邮箱进行hash
+        String hashEmail = DigestUtils.md5Hex(userResetReqVO.getEmail());
+        String emailCode = (String) redisTemplate.opsForValue().get(RedisKeyPrefixConstant.EMAIL_VERIFY_RESET_CODE  + hashEmail);
+        if (emailCode == null) {
+            log.info("无法从redis中获取到邮箱验证码");
+            throw new BusinessException(ResultCode.EMAIL_CODE_EXPIRED);
+        }
+        if (!emailCode.equals(userResetReqVO.getEmailVerifyCode())) {
+            log.info("用户提交的验证码错误");
+            throw new BusinessException(ResultCode.EMAIL_CODE_ERROR);
+        }
+
+        //修改密码操作
+        //密码加密
+        String encrypt = PasswordUtils.encrypt(userResetReqVO.getNewPassword());
+        //更新密码
+        Integer result = userAuthMapper.updatePassword(uid, encrypt);
+        if(result <= 0){
+            throw new BusinessException(ResultCode.ERROR);
+        }
     }
 
 }

@@ -45,7 +45,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 .addPathPatterns("/web/user/**")
                 .addPathPatterns("/web/auth/**")
                 .addPathPatterns("/web/feedback/**")
-                .excludePathPatterns("/web/auth/login","/web/auth/register");
+                .excludePathPatterns("/web/auth/login","/web/auth/register","/web/auth/reset");
 
     }
 }

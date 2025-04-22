@@ -97,7 +97,17 @@ public enum ResultCode {
     /**
      * 未知的反馈类型
      */
-    UNKNOWN_FEEDBACK_TYPE(449,"未知的反馈类型");
+    UNKNOWN_FEEDBACK_TYPE(449,"未知的反馈类型"),
+
+    /**
+     * 邮箱不存在
+     */
+    UNKNOWN_EMAIL_ACCOUNT(450,"未查到该邮箱所绑定的账号"),
+
+    /**
+     * 未知验证码服务类型
+     */
+    UNKNOWN_EMAIL_CODE_SERVICE(451,"未知验证码服务类型");
 
     @Getter
     private final int code;

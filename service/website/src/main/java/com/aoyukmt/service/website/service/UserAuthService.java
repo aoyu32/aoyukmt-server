@@ -1,10 +1,10 @@
 package com.aoyukmt.service.website.service;
 
 import com.aoyukmt.model.dto.UserBindEmailDTO;
-import com.aoyukmt.model.dto.UserLoginDTO;
-import com.aoyukmt.model.dto.UserResetDTO;
+import com.aoyukmt.model.dto.UserModifyPasswordDTO;
 import com.aoyukmt.model.vo.req.UserLoginReqVO;
 import com.aoyukmt.model.vo.req.UserRegisterReqVO;
+import com.aoyukmt.model.vo.req.UserResetReqVO;
 import com.aoyukmt.model.vo.resp.UserLoginRespVO;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -40,17 +40,16 @@ public interface UserAuthService {
 
     /**
      * 重置密码
-     * @param userResetDTO 用户提交的原密码和新密码
+     * @param userModifyPasswordDTO 用户提交的原密码和新密码
      * @return 更新结果
      */
-    void reset(Long uid,UserResetDTO userResetDTO);
+    void modify(Long uid, UserModifyPasswordDTO userModifyPasswordDTO);
 
     /**
      * 获取邮箱验证码
-     * @param uid 用户uid
      * @return 验证码
      */
-    void code(Long uid,String email);
+    void code(String email,String keyPrefix);
 
     /**
      * 绑定邮箱
@@ -58,4 +57,10 @@ public interface UserAuthService {
      * @param userBindEmailDTO 用户绑定邮箱的信息
      */
     void email(Long uid, UserBindEmailDTO userBindEmailDTO);
+
+    /**
+     * 重置密码
+     * @param userResetReqVO 用户重置密码提交的数据
+     */
+    void reset(UserResetReqVO userResetReqVO);
 }
