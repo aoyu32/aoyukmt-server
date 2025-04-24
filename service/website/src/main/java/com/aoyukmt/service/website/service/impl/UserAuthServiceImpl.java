@@ -264,11 +264,7 @@ public class UserAuthServiceImpl implements UserAuthService {
         if(type == null || type.isEmpty() || !VerificationCodeConstant.isContains(type)) {
             throw new BusinessException(ResultCode.UNKNOWN_EMAIL_CODE_SERVICE);
         }
-        //判断邮箱是否已被绑定
-        //查询邮箱
-        if (userAuthMapper.existEmail(email)) {
-            throw new BusinessException(ResultCode.EMAIL_HAS_BINDING);
-        }
+
 
         //生成随机验证码
         String code = RandomUtil.randomNumbers(6);
@@ -290,8 +286,9 @@ public class UserAuthServiceImpl implements UserAuthService {
         if (type.equals(VerificationCodeConstant.RESET_VERIFICATION_COde)){
             keyPrefix = RedisKeyPrefixConstant.EMAIL_VERIFY_RESET_CODE;
         }
-
         String key = keyPrefix + emailHash;
+
+        //向redis中存入验证码
         redisTemplate.opsForValue().set(key, code, 5, TimeUnit.MINUTES);
     }
 
@@ -353,10 +350,13 @@ public class UserAuthServiceImpl implements UserAuthService {
         //对邮箱进行hash
         String hashEmail = DigestUtils.md5Hex(userResetReqVO.getEmail());
         String emailCode = (String) redisTemplate.opsForValue().get(RedisKeyPrefixConstant.EMAIL_VERIFY_RESET_CODE  + hashEmail);
+        log.info("用户请求发送的验证码：{}",userResetReqVO.getEmailVerifyCode());
+        log.info("存入redis中的验证码：{}", emailCode);
         if (emailCode == null) {
             log.info("无法从redis中获取到邮箱验证码");
             throw new BusinessException(ResultCode.EMAIL_CODE_EXPIRED);
         }
+
         if (!emailCode.equals(userResetReqVO.getEmailVerifyCode())) {
             log.info("用户提交的验证码错误");
             throw new BusinessException(ResultCode.EMAIL_CODE_ERROR);
@@ -370,6 +370,11 @@ public class UserAuthServiceImpl implements UserAuthService {
         if(result <= 0){
             throw new BusinessException(ResultCode.ERROR);
         }
+
+        //删除redis中邮箱验证码的key
+        redisTemplate.delete(RedisKeyPrefixConstant.EMAIL_VERIFY_RESET_CODE + hashEmail);
+
+        log.info("密码重置结束");
     }
 
 }

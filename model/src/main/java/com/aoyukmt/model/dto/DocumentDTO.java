@@ -26,8 +26,9 @@ public class DocumentDTO {
      * 文档内容的存储地址，通常是 Markdown 文件的 URL 或存储路径。
      */
     private String docsUrl;
+
     /**
-     * 英文标签，用于支持多语言文档。
+     * 英文路由标签
      */
     private String enLabel;
 

@@ -20,7 +20,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().permitAll() // 允许所有请求无需认证
                 )
-                .csrf().disable(); // 通常也需要禁用CSRF保护
+                .csrf().disable();
 
         return http.build();
     }

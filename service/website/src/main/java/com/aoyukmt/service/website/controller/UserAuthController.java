@@ -1,6 +1,5 @@
 package com.aoyukmt.service.website.controller;
 
-import com.aoyukmt.common.constant.RedisKeyPrefixConstant;
 import com.aoyukmt.common.result.Result;
 import com.aoyukmt.common.utils.ThreadLocalUtils;
 import com.aoyukmt.model.dto.UserBindEmailDTO;
@@ -75,11 +74,10 @@ public class UserAuthController {
     }
 
     @Operation(summary = "获取邮箱验证码", description = "获取邮箱验证码服务")
-    @PostMapping("/code")
-    public Result<String> code(@RequestBody Map<String,String> param) {
-        Long uid = Long.valueOf(ThreadLocalUtils.get("uid").toString());
-        log.info("用户id为：{},请求获取{}邮箱验证码，邮箱为{}", uid,param.get("type"), param.get("email"));
-        userAuthService.code(param.get("email"), param.get("type"));
+    @PostMapping("/code/{type}")
+    public Result<String> code(@PathVariable String type, @RequestBody Map<String, String> param) {
+        log.info("邮箱为：{}，请求获取邮箱验证码", param.get("email"));
+        userAuthService.code(param.get("email"), type);
         log.info("验证码发送成功");
         return Result.success();
     }
@@ -88,16 +86,16 @@ public class UserAuthController {
     @PostMapping("/email")
     public Result<?> email(@RequestBody UserBindEmailDTO userBindEmailDTO) {
         Long uid = Long.valueOf(ThreadLocalUtils.get("uid").toString());
-        log.info("用户uid为：{}的用户请求绑定邮箱，验证码：{}，邮箱：{}",uid,userBindEmailDTO.getCode(),userBindEmailDTO.getEmail());
+        log.info("用户uid为：{}的用户请求绑定邮箱，验证码：{}，邮箱：{}", uid, userBindEmailDTO.getCode(), userBindEmailDTO.getEmail());
         userAuthService.email(uid, userBindEmailDTO);
         return Result.success();
     }
 
 
-    @Operation(summary = "重置密码",description = "忘记密码后重置密码")
+    @Operation(summary = "重置密码", description = "忘记密码后重置密码")
     @PostMapping("reset")
-    public Result<?> resetPassword(@RequestBody UserResetReqVO userResetReqVO){
-        log.info("邮箱为：{}的用户请求重置密码",userResetReqVO.getEmail());
+    public Result<?> resetPassword(@RequestBody UserResetReqVO userResetReqVO) {
+        log.info("邮箱为：{}的用户请求重置密码", userResetReqVO.getEmail());
         userAuthService.reset(userResetReqVO);
         log.info("重置密码成功");
         return Result.success();

@@ -7,9 +7,12 @@ import com.aoyukmt.common.utils.ThreadLocalUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * @ClassName：RequestInterceptor
