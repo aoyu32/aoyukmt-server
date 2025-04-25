@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.12</version>
+        <version>3.4.0</version>
     </parent>
 
     <groupId>com.aoyu</groupId>
@@ -26,9 +26,9 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-boot.version>3.0.12</spring-boot.version>
+        <spring-boot.version>3.4.0</spring-boot.version>
         <mysql.version>8.0.30</mysql.version>
-        <mybatis.version>3.0.0</mybatis.version>
+        <mybatis.version>3.0.3</mybatis.version>
         <druid.version>1.2.8</druid.version>
         <knife4j.version>4.5.0</knife4j.version>
         <lombox.version>1.18.30</lombox.version>
@@ -76,6 +76,7 @@
                 <version>${lombok.version}</version>
                 <scope>provided</scope>
             </dependency>
+
 
 
 
