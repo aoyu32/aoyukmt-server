@@ -1,7 +1,7 @@
 package com.aoyukmt.service.website.controller;
 
-import com.aoyukmt.annotation.AppNameValidation;
-import com.aoyukmt.annotation.VersionTypeValidation;
+import com.aoyukmt.common.annotation.AppNameValidation;
+import com.aoyukmt.common.annotation.VersionTypeValidation;
 import com.aoyukmt.common.result.Result;
 import com.aoyukmt.model.vo.req.HistoryAppVO;
 import com.aoyukmt.model.vo.req.LatestAppVO;
@@ -30,8 +30,8 @@ import java.io.IOException;
  */
 @Tag(name = "应用下载", description = "官网请求下载安装包")
 @RestController
-@Validated
 @RequestMapping("/web/download")
+@Validated
 public class DownloadController {
 
     private static final Logger log = LoggerFactory.getLogger(DownloadController.class);

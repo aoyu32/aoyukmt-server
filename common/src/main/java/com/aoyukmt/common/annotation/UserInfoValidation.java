@@ -1,6 +1,6 @@
-package com.aoyukmt.annotation;
+package com.aoyukmt.common.annotation;
 
-import com.aoyukmt.validator.UserInfoValidator;
+import com.aoyukmt.common.validator.UserInfoValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

@@ -1,10 +1,10 @@
-package com.aoyukmt.annotation;
+package com.aoyukmt.common.annotation;
 
 /*
  * 安装包类型校验注解
  */
 
-import com.aoyukmt.validator.PackageTypeValidator;
+import com.aoyukmt.common.validator.PackageTypeValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

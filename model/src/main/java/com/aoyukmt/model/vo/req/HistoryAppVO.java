@@ -1,7 +1,7 @@
 package com.aoyukmt.model.vo.req;
 
-import com.aoyukmt.annotation.PackageTypeValidation;
-import com.aoyukmt.annotation.VersionValidation;
+import com.aoyukmt.common.annotation.PackageTypeValidation;
+import com.aoyukmt.common.annotation.VersionValidation;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 

@@ -1,6 +1,6 @@
-package com.aoyukmt.annotation;
+package com.aoyukmt.common.annotation;
 
-import com.aoyukmt.validator.AppNameValidator;
+import com.aoyukmt.common.validator.AppNameValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

@@ -7,7 +7,7 @@ package com.aoyukmt.model.vo.req;
  * @Description: 最新版本请求数据
  */
 
-import com.aoyukmt.annotation.PackageTypeValidation;
+import com.aoyukmt.common.annotation.PackageTypeValidation;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 

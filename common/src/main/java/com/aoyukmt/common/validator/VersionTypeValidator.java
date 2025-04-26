@@ -1,6 +1,6 @@
-package com.aoyukmt.validator;
+package com.aoyukmt.common.validator;
 
-import com.aoyukmt.annotation.VersionTypeValidation;
+import com.aoyukmt.common.annotation.VersionTypeValidation;
 import com.aoyukmt.common.constant.ValidationConstant;
 import com.aoyukmt.common.constant.VersionTypeConstant;
 import jakarta.validation.ConstraintValidator;
